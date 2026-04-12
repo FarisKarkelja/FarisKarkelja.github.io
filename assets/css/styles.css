@@ -1012,6 +1012,16 @@ img {
   }
 }
 
+.projects__card--tall {
+  height: 560px;
+}
+
+.projects__card--tall .projects_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* For 2K resolutions (2048 x 1152, 2048 x 1536) */
 @media screen and (min-width: 2048px) {
   body {
