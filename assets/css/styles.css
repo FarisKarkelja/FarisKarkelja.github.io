@@ -6,25 +6,9 @@
   src: url("../fonts/Photograph\ Signature.ttf") format("truetype");
 }
 
-/*=============== VARIABLES CSS ===============*/
 :root {
   --header-height: 3.5rem;
 
-  /*========== Colors ==========*/
-  /* 
-      Color mode HSL(hue, saturation, lightness)
-
-      Change favorite color:
-
-      Default Cyan: hsl(180, 80%, 48%)
-      Blue: hsl(220, 90%, 64%) - Pink: hsl(300, 70%, 64%)
-      Green: hsl(110, 70%, 64%) - Purple: hsl(255, 70%, 64%)
-      Orange: hsl(15, 80%, 64%) - Red: hsl(358, 80%, 64%)
-
-      For more colors visit: https://htmlcolorcodes.com/
-      -> Choose any color 
-      -> Copy the color mode (HSL)
-  */
   --hue: 180;
   --first-color: hsl(var(--hue), 80%, 48%);
   --first-color-alt: hsl(var(--hue), 80%, 44%);
@@ -35,7 +19,6 @@
   --container-color: hsl(var(--hue), 8%, 12%);
 
   /*========== Font and typography ==========*/
-  /*.5rem = 8px | 1rem = 16px ...*/
   --body-font: "Unbounded", sans-serif;
   --bigger-font-size: 2rem;
   --h1-font-size: 1.5rem;
@@ -486,6 +469,13 @@ img {
   pointer-events: initial;
 }
 
+#view_more_btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.75rem;
+}
+
 /*=============== RESUME ===============*/
 .resume__container {
   row-gap: 4rem;
@@ -615,6 +605,73 @@ img {
 .contact__link:hover {
   transform: translateY(-0.25rem);
   color: var(--first-color);
+}
+
+/* ===== BACK BUTTON & SEPERATE PROJECTS PAGE ===== */
+.back-btn {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--white-color);
+  font-size: var(--small-font-size);
+  font-weight: var(--font-medium);
+  background-color: var(--container-color);
+  border: 1.5px solid transparent;
+  padding: 0.6rem 1rem 0.6rem 0.75rem;
+  border-radius: 2rem;
+  z-index: var(--z-fixed);
+  transition:
+    color 0.3s,
+    border-color 0.3s,
+    transform 0.3s;
+}
+
+.back-btn i {
+  font-size: 1.1rem;
+  transition: transform 0.3s;
+}
+
+.back-btn:hover {
+  color: var(--first-color);
+  border-color: var(--first-color);
+}
+
+.back-btn:hover i {
+  transform: translateX(-4px);
+}
+
+.projects-page {
+  padding-block: 6rem 4rem;
+}
+
+.projects-page .projects__container {
+  max-width: 1300px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media screen and (max-width: 767px) {
+  .projects-page .projects__container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1149px) {
+  .projects-page .projects__container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media screen and (min-width: 1150px) {
+  .projects-page .projects__container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
 }
 
 /*=============== FOOTER ===============*/
@@ -825,7 +882,7 @@ img {
   .home__container {
     grid-template-columns: 400px 480px;
     column-gap: 7rem;
-    padding-block: 8rem 3rem;
+    padding-block: 4rem 3rem;
   }
 
   .home__image {

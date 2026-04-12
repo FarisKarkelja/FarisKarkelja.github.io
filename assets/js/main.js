@@ -1,23 +1,19 @@
-/*=============== SHOW MENU ===============*/
 const navMenu = document.getElementById("nav-menu"),
   navToggle = document.getElementById("nav-toggle"),
   navClose = document.getElementById("nav-close");
 
-/*===== MENU SHOW =====*/
 if (navToggle) {
   navToggle.addEventListener("click", () => {
     navMenu.classList.add("show-menu");
   });
 }
 
-/*===== MENU HIDDEN =====*/
 if (navClose) {
   navClose.addEventListener("click", () => {
     navMenu.classList.remove("show-menu");
   });
 }
 
-/*=============== REMOVE MENU MOBILE ===============*/
 const navLink = document.querySelectorAll(".nav__link");
 
 const linkAction = () => {
@@ -26,9 +22,14 @@ const linkAction = () => {
 };
 navLink.forEach((n) => n.addEventListener("click", linkAction));
 
-/*=============== HOME TYPED JS ===============*/
 const typedHome = new Typed("#home-typed", {
-  strings: ["Developer", "Student", "Performer"],
+  strings: [
+    "a Developer",
+    "a Student",
+    "an Enthusiast",
+    "an Innovator",
+    "a Technologist",
+  ],
   typeSpeed: 80,
   backSpeed: 40,
   backDelay: 2000,
@@ -36,7 +37,6 @@ const typedHome = new Typed("#home-typed", {
   cursorChar: "_",
 });
 
-/*=============== ADD SHADOW HEADER ===============*/
 const shadowHeader = () => {
   const header = document.getElementById("header");
   this.scrollY >= 50
@@ -46,17 +46,36 @@ const shadowHeader = () => {
 
 window.addEventListener("scroll", shadowHeader);
 
-/*=============== CONTACT EMAIL JS ===============*/
 const contactForm = document.getElementById("contact-form"),
   contactMessage = document.getElementById("contact-message");
 
 const sendEmail = (e) => {
   e.preventDefault();
+  emailjs
+    .sendForm(
+      "service_yae2sl5",
+      "template_ps5tnjr",
+      "#contact-form",
+      "mw4HjgALzc5F6pg84",
+    )
+    .then(
+      () => {
+        contactMessage.textContent = "Message sent successfully!";
+
+        setTimeout(() => {
+          contactMessage.textContent = "";
+        }, 5000);
+
+        contactForm.reset();
+      },
+      () => {
+        contactMessage.textContent = "Message not sent.";
+      },
+    );
 };
 
 contactForm.addEventListener("submit", sendEmail);
 
-/*=============== SHOW SCROLL UP ===============*/
 const scrollUp = () => {
   const scrollUp = document.getElementById("scroll-up");
   this.scrollY >= 350
@@ -66,7 +85,6 @@ const scrollUp = () => {
 
 window.addEventListener("scroll", scrollUp);
 
-/*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
 const sections = document.querySelectorAll("section[id]");
 
 const scrollActive = () => {
@@ -90,7 +108,6 @@ const scrollActive = () => {
 
 window.addEventListener("scroll", scrollActive);
 
-/*=============== SCROLL REVEAL ANIMATION ===============*/
 const sr = ScrollReveal({
   origin: "top",
   distance: "60px",
