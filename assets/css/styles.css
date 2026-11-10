@@ -447,6 +447,13 @@ img {
   transition: opacity 0.4s;
 }
 
+.projects_img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+}
+
 .projects__title {
   font-size: var(--h3-font-size);
 }
@@ -475,6 +482,38 @@ img {
   align-items: center;
   gap: 0.5rem;
   padding: 0.9rem 1.75rem;
+}
+
+.projects__card:focus-within .projects__data {
+  opacity: 1;
+  pointer-events: initial;
+}
+
+@media (hover: none) {
+  .projects__data {
+    position: static;
+    height: auto;
+    width: auto;
+    opacity: 1;
+    pointer-events: auto;
+    background-color: var(--container-color);
+    backdrop-filter: none;
+    border-radius: 0;
+    padding: 1.25rem 1rem 1.5rem;
+  }
+
+  .projects__data .button {
+    background-color: var(--body-color);
+  }
+
+  .projects__card:hover {
+    box-shadow: 0 8px 16px hsla(0, 0%, 0%, 0.5);
+  }
+
+  .projects__data .button:hover {
+    box-shadow: none;
+    color: var(--white-color);
+  }
 }
 
 /*=============== RESUME ===============*/
@@ -610,7 +649,7 @@ img {
 
 /* ===== BACK BUTTON & SEPERATE PROJECTS PAGE ===== */
 .back-btn {
-  position: fixed;
+  position: absolute;
   top: 1.5rem;
   left: 1.5rem;
   display: inline-flex;
