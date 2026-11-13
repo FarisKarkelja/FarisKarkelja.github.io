@@ -1,0 +1,411 @@
+/* ------------------------------------------------------------------
+   Faris Karkelja - design tokens, themes & base
+   Concept: a theatre programme printed by an old computer.
+   Every colour is a semantic token, so a theme is just one block of
+   variables (see "Themes" below). Switch live with the terminal
+   (`theme midnight`) or the swatches in the footer.
+------------------------------------------------------------------- */
+
+@import '@fontsource-variable/bodoni-moda/opsz.css';
+@import '@fontsource-variable/bodoni-moda/opsz-italic.css';
+@import '@fontsource-variable/ibm-plex-sans/index.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/* ---------- Themes ----------
+   To make another theme the default, change DEFAULT_THEME in src/data/themes.ts. */
+
+:root,
+[data-theme='velvet'] {
+  /* Black tie: velvet black, brass, ivory, amber terminal */
+  --bg: #130d10;
+  --bg-deep: #0c080a;
+  --surface: #1c1418;
+  --surface-2: #261b20;
+  --text: #efe6d8;
+  --text-dim: #b9ada0;
+  --muted: #8f8378;
+  --accent: #c8a061;
+  --accent-bright: #e2c287;
+  --on-accent: #0c080a;
+  --phosphor: #ffb54a;
+  --signal: #7fe0e4;
+  --tty-bg: #0d0907;
+}
+
+[data-theme='midnight'] {
+  /* Midnight-blue tuxedo: deep navy, ice white, azure, lime spark */
+  --bg: #0a0f1d;
+  --bg-deep: #060a14;
+  --surface: #111a30;
+  --surface-2: #1a2542;
+  --text: #e9eefb;
+  --text-dim: #aab6d3;
+  --muted: #7d8aa8;
+  --accent: #7cb7ff;
+  --accent-bright: #b3d6ff;
+  --on-accent: #06101f;
+  --phosphor: #8df0c8;
+  --signal: #c8f55a;
+  --tty-bg: #060b16;
+}
+
+[data-theme='aurora'] {
+  /* Aurora: plum black, soft violet, lime terminal, rose signal */
+  --bg: #120c1c;
+  --bg-deep: #0a0612;
+  --surface: #1b1330;
+  --surface-2: #281c44;
+  --text: #efeafc;
+  --text-dim: #b8afd0;
+  --muted: #8a80a6;
+  --accent: #b79cff;
+  --accent-bright: #d6c6ff;
+  --on-accent: #110a1f;
+  --phosphor: #c9f66b;
+  --signal: #ff9ac1;
+  --tty-bg: #0b0714;
+}
+
+[data-theme='graphite'] {
+  /* Graphite and lime: neutral dev-tool grey with one loud accent */
+  --bg: #0f1113;
+  --bg-deep: #090a0b;
+  --surface: #17191c;
+  --surface-2: #212428;
+  --text: #eceeef;
+  --text-dim: #adb2b7;
+  --muted: #7f858b;
+  --accent: #c6f432;
+  --accent-bright: #dcff6e;
+  --on-accent: #0b0d05;
+  --phosphor: #9ef0a8;
+  --signal: #6ad7ff;
+  --tty-bg: #08090a;
+}
+
+[data-theme='ember'] {
+  /* Ember: warm charcoal, sand, salsa red, amber terminal */
+  --bg: #150d0c;
+  --bg-deep: #0d0706;
+  --surface: #1f1412;
+  --surface-2: #2c1c19;
+  --text: #f3e9df;
+  --text-dim: #c2b0a3;
+  --muted: #94827a;
+  --accent: #ff6a55;
+  --accent-bright: #ff9482;
+  --on-accent: #1a0704;
+  --phosphor: #ffb54a;
+  --signal: #ffd38a;
+  --tty-bg: #0e0706;
+}
+
+:root {
+  --rule: color-mix(in srgb, var(--text) 12%, transparent);
+  --rule-strong: color-mix(in srgb, var(--text) 24%, transparent);
+  --danger: #ef8f73;
+
+  /* type */
+  --serif: 'Bodoni Moda Variable', 'Bodoni 72', 'Didot', Georgia, serif;
+  --sans: 'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* type scale - 1.25 (major third) on a 17px base, display sizes fluid */
+  --step--1: 0.85rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.33rem;
+  --step-2: 1.66rem;
+  --step-3: clamp(1.9rem, 1.4rem + 1.8vw, 2.6rem);
+  --step-4: clamp(2.4rem, 1.6rem + 3.4vw, 4.2rem);
+  --step-5: clamp(3.2rem, 1.8rem + 6vw, 7rem);
+  --display: clamp(4.4rem, 1rem + 15vw, 17rem);
+
+  /* layout */
+  --gutter: clamp(1.25rem, 0.6rem + 3vw, 3.5rem);
+  --max: 1360px;
+  --measure: 64ch;
+  --header-h: 4.25rem;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-feature-settings: 'kern', 'liga';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  transition: background-color 0.5s var(--ease-out), color 0.5s var(--ease-out);
+}
+
+/* film grain over everything - prints the page on "paper" */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+img,
+svg,
+canvas,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  font-optical-sizing: auto;
+  text-wrap: balance;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.container {
+  width: min(100% - 2 * var(--gutter), var(--max));
+  margin-inline: auto;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform 0.2s;
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- section scaffolding ---------- */
+
+.section {
+  padding-block: clamp(4.5rem, 3rem + 7vw, 9rem);
+  position: relative;
+}
+
+.section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+  gap: 1.5rem 3rem;
+  align-items: end;
+  margin-bottom: clamp(2.2rem, 1.5rem + 3vw, 4rem);
+}
+
+.section-title {
+  font-size: var(--step-5);
+  font-variation-settings: 'opsz' 96;
+}
+
+.section-intro {
+  color: var(--text-dim);
+  max-width: 26rem;
+  margin: 0;
+}
+
+@media (max-width: 800px) {
+  .section-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+/* ---------- buttons & links ---------- */
+
+.btn {
+  --btn-bg: color-mix(in srgb, var(--bg) 55%, transparent);
+  --btn-fg: var(--text);
+  --btn-line: var(--rule-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.7rem 1.35rem;
+  border: 1px solid var(--btn-line);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: 500 0.95rem/1 var(--sans);
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition:
+    background-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out);
+}
+.btn:hover {
+  --btn-line: var(--text);
+}
+.btn--accent {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--on-accent);
+  --btn-line: var(--accent);
+}
+.btn--accent:hover {
+  --btn-bg: var(--accent-bright);
+  --btn-line: var(--accent-bright);
+}
+.btn svg,
+.icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: none;
+}
+
+/* quiet inline link: no underline until you point at it */
+.link {
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+.link:hover {
+  color: var(--accent-bright);
+}
+
+kbd {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 0.12rem 0.38rem;
+  border: 1px solid var(--rule-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: var(--text-dim);
+}
+
+.tech {
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+/* arch frame used for portraits */
+.arch {
+  position: relative;
+  border-radius: 999px 999px 4px 4px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1px var(--rule),
+    0 0 0 10px var(--bg),
+    0 0 0 11px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.arch img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* placeholders are only outlined while developing (npm run dev) */
+html.dev [data-placeholder='true'] {
+  outline: 1px dashed var(--phosphor);
+  outline-offset: 4px;
+}
+
+/* ---------- view transitions between pages (progressive enhancement) ---------- */
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  @view-transition {
+    navigation: none;
+  }
+}

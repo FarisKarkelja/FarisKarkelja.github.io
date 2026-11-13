@@ -1,0 +1,294 @@
+---
+import Icon from './Icon.astro';
+import Signature from './Signature.astro';
+import { profile } from '../data/profile';
+
+const path = Astro.url.pathname;
+const onHome = path === '/' || path === '';
+const prefix = onHome ? '' : '/';
+const nav = [
+  { href: `${prefix}#work`, label: 'Work' },
+  { href: `${prefix}#experience`, label: 'Experience' },
+  { href: `${prefix}#stage`, label: 'Stage' },
+  { href: `${prefix}#contact`, label: 'Contact' },
+];
+---
+
+<header class="site-header" data-header>
+  <div class="site-header__inner container">
+    <a class="logo" href="/" aria-label="Faris Karkelja, home">
+      <Signature variant="mono" />
+    </a>
+
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <button class="term-btn" type="button" data-terminal-open aria-haspopup="dialog" aria-label="Open the terminal">
+        <Icon name="terminal" />
+        <span class="term-btn__label">Terminal</span>
+        <kbd data-kbd-hint>Ctrl K</kbd>
+      </button>
+      <a class="btn cv-btn" href={profile.cvPdf} download>
+        <Icon name="download" />
+        CV
+      </a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+        <span class="visually-hidden">Menu</span>
+        <span class="menu-btn__bars" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Outside the header on purpose: the header gets a backdrop-filter when scrolled, and that would
+     trap a fixed child inside the header's own box. -->
+<div class="mobile-menu" id="mobile-menu" data-menu hidden>
+  <nav aria-label="Mobile">
+    <ul>
+      {nav.map((item) => <li><a href={item.href} data-menu-link>{item.label}</a></li>)}
+    </ul>
+  </nav>
+  <a class="btn btn--accent mobile-menu__cv" href={profile.cvPdf} download data-menu-link>
+    <Icon name="download" />
+    Download CV
+  </a>
+</div>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    height: var(--header-h);
+    transition: background-color 0.4s var(--ease-out), border-color 0.4s;
+    border-bottom: 1px solid transparent;
+  }
+  .site-header.is-scrolled,
+  .site-header.is-menu-open {
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom-color: var(--rule);
+  }
+  .site-header.is-menu-open {
+    background: var(--bg-deep);
+  }
+  .site-header__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .logo {
+    display: block;
+    font-size: 2.6rem;
+    color: var(--text);
+    text-decoration: none;
+    margin-left: -0.3rem;
+    transition: color 0.25s;
+  }
+  .logo:hover {
+    color: var(--accent-bright);
+  }
+  .site-nav {
+    margin-left: auto;
+  }
+  .site-nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-nav a {
+    font-size: 0.95rem;
+    text-decoration: none;
+    color: var(--text-dim);
+    transition: color 0.2s;
+  }
+  .site-nav a:hover {
+    color: var(--text);
+  }
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .term-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.6rem;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--phosphor) 28%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--tty-bg) 70%, transparent);
+    color: var(--phosphor);
+    font: 500 0.85rem/1 var(--mono);
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .term-btn:hover {
+    border-color: color-mix(in srgb, var(--phosphor) 60%, transparent);
+    background: color-mix(in srgb, var(--phosphor) 8%, var(--tty-bg));
+  }
+  .term-btn kbd {
+    color: color-mix(in srgb, var(--phosphor) 70%, transparent);
+    border-color: color-mix(in srgb, var(--phosphor) 30%, transparent);
+  }
+  .cv-btn {
+    min-height: 2.6rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.88rem;
+    gap: 0.45rem;
+  }
+  .menu-btn {
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .menu-btn__bars,
+  .menu-btn__bars::before {
+    display: block;
+    width: 1.1rem;
+    height: 1px;
+    margin: auto;
+    background: currentColor;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .menu-btn__bars {
+    transform: translateY(-3px);
+  }
+  .menu-btn__bars::before {
+    content: '';
+    transform: translateY(6px);
+  }
+  .menu-btn[aria-expanded='true'] .menu-btn__bars {
+    transform: rotate(45deg);
+  }
+  .menu-btn[aria-expanded='true'] .menu-btn__bars::before {
+    transform: rotate(-90deg);
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0;
+    z-index: 59;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem var(--gutter) 2.5rem;
+    background: var(--bg-deep);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .mobile-menu[hidden] {
+    display: none;
+  }
+  .mobile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .mobile-menu li + li {
+    border-top: 1px solid var(--rule);
+  }
+  .mobile-menu li a {
+    display: block;
+    padding: 0.9rem 0;
+    font-family: var(--serif);
+    font-size: clamp(2rem, 9vw, 2.6rem);
+    line-height: 1.1;
+    text-decoration: none;
+  }
+  .mobile-menu__cv {
+    align-self: flex-start;
+  }
+
+  @media (max-width: 940px) {
+    .site-nav,
+    .cv-btn {
+      display: none;
+    }
+    .menu-btn {
+      display: grid;
+      place-items: center;
+    }
+    .site-header__actions {
+      margin-left: auto;
+    }
+    .logo {
+      font-size: 2.2rem;
+    }
+  }
+  @media (min-width: 941px) {
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+  @media (max-width: 520px) {
+    .term-btn__label,
+    .term-btn kbd {
+      display: none;
+    }
+    .term-btn {
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      justify-content: center;
+    }
+  }
+  @media (hover: none) {
+    .term-btn kbd {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // keyboard hint: Cmd on Mac, Ctrl elsewhere
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  document.querySelectorAll('[data-kbd-hint]').forEach((el) => (el.textContent = isMac ? '⌘ K' : 'Ctrl K'));
+
+  // mobile menu
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const lenis = () => (window as unknown as { __lenis?: { stop: () => void; start: () => void } }).__lenis;
+  const isOpen = () => toggle?.getAttribute('aria-expanded') === 'true';
+
+  const setMenu = (open: boolean) => {
+    if (!toggle || !menu) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+    header?.classList.toggle('is-menu-open', open);
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    document.querySelectorAll<HTMLElement>('main, footer').forEach((el) => (el.inert = open));
+    open ? lenis()?.stop() : lenis()?.start();
+  };
+
+  toggle?.addEventListener('click', () => setMenu(!isOpen()));
+  document.querySelectorAll('[data-menu-link]').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+  document.querySelectorAll('[data-terminal-open]').forEach((b) => b.addEventListener('click', () => isOpen() && setMenu(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) {
+      setMenu(false);
+      toggle?.focus();
+    }
+  });
+  // leaving the mobile layout (rotate / resize) closes the menu
+  window.matchMedia('(min-width: 941px)').addEventListener('change', (e) => e.matches && setMenu(false));
+</script>

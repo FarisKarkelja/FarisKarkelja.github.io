@@ -1,0 +1,175 @@
+---
+import Icon from './Icon.astro';
+import Signature from './Signature.astro';
+import { profile } from '../data/profile';
+import { themes } from '../data/themes';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <a class="site-footer__sig" href="/" aria-label="Faris Karkelja, back to the top">
+        <Signature write />
+      </a>
+      <ul class="site-footer__social">
+        <li>
+          <a href={`mailto:${profile.email}`} aria-label="Email Faris"><Icon name="mail" /></a>
+        </li>
+        <li>
+          <a href={profile.socials.github} target="_blank" rel="noopener" aria-label="GitHub"><Icon name="github" /></a>
+        </li>
+        <li>
+          <a href={profile.socials.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn"><Icon name="linkedin" /></a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="site-footer__bar">
+      <p class="site-footer__place">Sarajevo, <time data-local-time>--:--</time></p>
+      <p class="site-footer__copy">&copy; {year} {profile.name}</p>
+      <div class="themes" role="group" aria-label="Colour theme">
+        <span class="themes__label">Theme</span>
+        {
+          themes.map((t) => (
+            <button type="button" class="themes__dot" data-theme-set={t.id} aria-pressed="false" title={`${t.name} - ${t.note}`} style={`--a:${t.bg};--b:${t.accent}`}>
+              <span class="visually-hidden">{t.name}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    padding-block: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.92rem;
+  }
+  .site-footer__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem 2rem;
+    padding-bottom: 2rem;
+  }
+  .site-footer__sig {
+    display: block;
+    font-size: clamp(3.4rem, 2.6rem + 3vw, 5rem);
+    color: var(--text);
+    text-decoration: none;
+    margin-left: -0.5rem;
+  }
+  .site-footer__social {
+    display: flex;
+    gap: 0.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-footer__social a {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 50%;
+    color: var(--text);
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+  }
+  .site-footer__social a:hover {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .site-footer__social :global(.icon) {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  .site-footer__bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+  }
+  .site-footer__bar p {
+    margin: 0;
+  }
+  .site-footer__place {
+    font-variant-numeric: tabular-nums;
+  }
+  .site-footer__copy {
+    text-align: center;
+  }
+  .themes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  .themes__label {
+    margin-right: 0.25rem;
+  }
+  .themes__dot {
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: 1px solid var(--rule-strong);
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
+    cursor: pointer;
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+  }
+  .themes__dot:hover {
+    transform: scale(1.15);
+  }
+  .themes__dot[aria-pressed='true'] {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 3.5px var(--text);
+  }
+  @media (max-width: 760px) {
+    .site-footer {
+      border-top: 0;
+      padding-top: 1rem;
+    }
+    .site-footer__top {
+      flex-direction: column;
+    }
+    .site-footer__sig {
+      margin-left: 0;
+    }
+    .site-footer__bar {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+    .site-footer__copy {
+      order: 3;
+    }
+    .themes {
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  import { getTheme, setTheme } from '../scripts/theme';
+
+  const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Sarajevo', hour: '2-digit', minute: '2-digit' });
+  const tick = () => document.querySelectorAll('[data-local-time]').forEach((t) => (t.textContent = fmt.format(new Date())));
+  tick();
+  setInterval(tick, 30_000);
+
+  const dots = document.querySelectorAll<HTMLButtonElement>('[data-theme-set]');
+  const mark = () => dots.forEach((d) => d.setAttribute('aria-pressed', String(d.dataset.themeSet === getTheme())));
+  dots.forEach((d) => d.addEventListener('click', () => setTheme(d.dataset.themeSet!)));
+  window.addEventListener('themechange', mark);
+  mark();
+</script>

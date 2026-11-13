@@ -1,0 +1,118 @@
+---
+/**
+ * Realistic 3D laptop + phone (three.js, see src/scripts/devices3d.ts). The screens show the
+ * project's screenshots from src/assets/projects/<slug>/ (desktop.jpg, mobile.jpg, optional mobile-2.jpg).
+ * Pass several slugs to load their screenshots into one rig (the home page swaps between them).
+ * Without JavaScript or WebGL the screenshots are shown flat instead.
+ */
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { getShots } from '../lib/shots';
+
+interface Props {
+  slugs: string[];
+  /** project names, one per slug, for the description */
+  titles: string[];
+  eager?: boolean;
+  sizes?: string;
+}
+
+const { slugs, titles, eager = false, sizes = '(max-width: 900px) 92vw, 46vw' } = Astro.props;
+const all = slugs.map((slug, i) => ({ slug, title: titles[i] ?? slug, ...getShots(slug) }));
+const hasLaptop = all.some((s) => s.desktop);
+const hasPhone = all.some((s) => s.mobile);
+const hasPhone2 = !hasLaptop && all.some((s) => s.mobile2);
+const layout = hasLaptop ? (hasPhone ? 'both' : 'laptop') : hasPhone2 ? 'phones' : 'phone';
+
+// screen textures: one fixed size per screen, never upscaled
+const url = async (img: ImageMetadata | undefined, width: number) =>
+  img ? (await getImage({ src: img, width: Math.min(width, img.width), format: 'webp', quality: 84 })).src : undefined;
+const tex = await Promise.all(all.map(async (s) => ({ d: await url(s.desktop, 1600), m: await url(s.mobile, 780), m2: await url(s.mobile2, 780) })));
+
+const first = all[0];
+const label = `Screenshots of ${all.map((s) => s.title).join(', ')} on ${layout === 'both' ? 'a laptop and a phone' : layout === 'laptop' ? 'a laptop' : 'a phone'}`;
+---
+
+<div class="devices" data-devices data-layout={layout} data-tex={JSON.stringify(tex)} role="img" aria-label={label}>
+  <canvas class="devices__gl"></canvas>
+  <div class="devices__flat">
+    {first?.desktop && <Image class="flat__laptop" src={first.desktop} alt="" widths={[640, 1000]} sizes={sizes} loading={eager ? 'eager' : 'lazy'} />}
+    {first?.mobile && <Image class="flat__phone" src={first.mobile} alt="" widths={[240, 420]} sizes="(max-width: 900px) 30vw, 12vw" loading="lazy" />}
+  </div>
+</div>
+
+<style>
+  .devices {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 11;
+  }
+  .devices[data-layout='laptop'] {
+    aspect-ratio: 16 / 10.5;
+  }
+  .devices[data-layout='phone'] {
+    aspect-ratio: 4 / 5;
+  }
+  .devices[data-layout='phones'] {
+    aspect-ratio: 1;
+  }
+  .devices__gl {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* fallback: flat screenshots (no JavaScript or no WebGL) */
+  .devices__flat {
+    position: absolute;
+    inset: 4% 4% 6%;
+  }
+  :global(.js) .devices:not(.no-gl) .devices__flat {
+    display: none;
+  }
+  .devices__flat :global(img) {
+    position: absolute;
+    object-fit: cover;
+    object-position: top;
+    background: var(--surface);
+    border: 6px solid #1b1c1f;
+    box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.7);
+  }
+  .devices__flat :global(.flat__laptop) {
+    left: 0;
+    top: 0;
+    width: 86%;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+  }
+  .devices__flat :global(.flat__phone) {
+    right: 0;
+    bottom: 0;
+    width: 24%;
+    aspect-ratio: 9 / 19.5;
+    border-radius: 18px;
+  }
+  .devices[data-layout='phone'] .devices__flat :global(.flat__phone),
+  .devices[data-layout='phones'] .devices__flat :global(.flat__phone) {
+    left: 50%;
+    width: 46%;
+    translate: -50% 0;
+  }
+</style>
+
+<script>
+  // three.js is only fetched when the first device scrolls near the screen
+  const els = [...document.querySelectorAll<HTMLElement>('[data-devices]')];
+  if (els.length) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        import('../scripts/devices3d').then((m) => m.init(els)).catch(() => els.forEach((el) => el.classList.add('no-gl')));
+      },
+      { rootMargin: '600px' },
+    );
+    els.forEach((el) => io.observe(el));
+  }
+</script>

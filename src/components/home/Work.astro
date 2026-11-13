@@ -1,0 +1,215 @@
+---
+import { getCollection } from 'astro:content';
+import Devices from '../Devices.astro';
+
+const featured = (await getCollection('projects', (p) => p.data.featured !== undefined)).sort(
+  (a, b) => (a.data.featured ?? 0) - (b.data.featured ?? 0),
+);
+const href = (p: (typeof featured)[number]) => (p.data.caseStudy ? `/work/${p.id}/` : (p.data.links.live ?? p.data.links.repo ?? '/work/'));
+---
+
+<section class="section work" id="work" aria-labelledby="work-title">
+  <div class="container">
+    <header class="section-head">
+      <h2 class="section-title" id="work-title">Selected work</h2>
+      <p class="section-intro">An accessibility tool with AI voices, a full-stack rebuild, a client website and a team hackathon.</p>
+    </header>
+
+    <div class="work__layout" data-work>
+      <ul class="work__list">
+        {
+          featured.map((p, i) => (
+            <li class="work__item" data-work-item={i} class:list={[{ 'is-active': i === 0 }]}>
+              <div class="work__mock">
+                <Devices slugs={[p.id]} titles={[p.data.title]} sizes="92vw" />
+              </div>
+              <p class="work__meta">
+                {p.data.year}, {p.data.context}
+              </p>
+              <h3 class="work__title">
+                <a href={href(p)}>{p.data.title}</a>
+              </h3>
+              <p class="work__tagline">{p.data.tagline}</p>
+              <ul class="work__highlights">
+                {p.data.highlights.slice(0, 3).map((h) => <li>{h}</li>)}
+              </ul>
+              <p class="tech">{p.data.stack.slice(0, 7).join(', ')}</p>
+              <a class="btn work__more" href={href(p)} aria-label={`Read the ${p.data.title} case study`}>Read the case study</a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="work__stage" aria-hidden="true">
+        <div class="work__pin">
+          <Devices slugs={featured.map((p) => p.id)} titles={featured.map((p) => p.data.title)} />
+          <p class="work__progress">
+            {featured.map((_, i) => <span data-work-dot={i} class:list={[{ 'is-active': i === 0 }]} />)}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p class="work__all"><a class="btn btn--accent" href="/work/">See all projects</a></p>
+  </div>
+</section>
+
+<style>
+  .work__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+  }
+  .work__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .work__item {
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-block: 2rem;
+    opacity: 0.28;
+    transition: opacity 0.5s var(--ease-out);
+  }
+  .work__item.is-active {
+    opacity: 1;
+  }
+  .work__item:first-child {
+    min-height: 60vh;
+    justify-content: flex-start;
+    padding-top: 6vh;
+  }
+  .work__meta {
+    margin: 0 0 0.7rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  .work__title {
+    font-size: clamp(2.6rem, 1.3rem + 3.7vw, 5.2rem);
+    line-height: 0.95;
+    font-variation-settings: 'opsz' 96;
+  }
+  .work__title a {
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+  .work__title a:hover {
+    color: var(--accent-bright);
+  }
+  .work__tagline {
+    margin: 1rem 0 1.2rem;
+    font-size: var(--step-1);
+    line-height: 1.4;
+    color: var(--text);
+    max-width: 26rem;
+  }
+  .work__highlights {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+    color: var(--text-dim);
+  }
+  .work__highlights li {
+    position: relative;
+    padding-left: 1.2rem;
+  }
+  .work__highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.78em;
+    width: 0.55rem;
+    height: 1px;
+    background: var(--accent);
+  }
+  .work__more {
+    margin-top: 1.4rem;
+  }
+  .work__mock {
+    display: none;
+    width: 100%;
+  }
+  .work__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: var(--header-h);
+  }
+  .work__progress {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .work__progress span {
+    width: 1.6rem;
+    height: 2px;
+    background: var(--rule-strong);
+    transition: background-color 0.3s, width 0.4s var(--ease-out);
+  }
+  .work__progress span.is-active {
+    width: 3rem;
+    background: var(--accent);
+  }
+  .work__all {
+    margin: 1rem 0 0;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .work__layout {
+      grid-template-columns: 1fr;
+    }
+    .work__stage {
+      display: none;
+    }
+    .work__mock {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .work__item,
+    .work__item:first-child {
+      min-height: 0;
+      opacity: 1;
+      padding-block: 0 3.5rem;
+    }
+    .work__title {
+      font-size: var(--step-4);
+    }
+  }
+</style>
+
+<script>
+  // The pinned laptop and phone switch to the project whose text is at the middle of the screen.
+  const root = document.querySelector('[data-work]');
+  if (root) {
+    const items = [...root.querySelectorAll<HTMLElement>('[data-work-item]')];
+    const stage = root.querySelector<HTMLElement>('.work__stage');
+    const rig = stage?.querySelector<HTMLElement>('[data-devices]');
+    const dots = root.querySelectorAll<HTMLElement>('[data-work-dot]');
+    const spins = [0, 0.12, -0.09, 0.07]; // a small turn of the rig per project, in radians
+    let active = 0;
+    const activate = (i: number) => {
+      if (i === active) return;
+      active = i;
+      items.forEach((el, j) => el.classList.toggle('is-active', j === i));
+      dots.forEach((el, j) => el.classList.toggle('is-active', j === i));
+      if (rig) rig.dataset.index = String(i); // read by the 3D rig if it loads later
+      rig?.dispatchEvent(new CustomEvent('devices:show', { detail: { index: i, spin: spins[i % spins.length] } }));
+    };
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && activate(items.indexOf(e.target as HTMLElement))),
+      { rootMargin: '-50% 0px -50% 0px' },
+    );
+    items.forEach((el) => io.observe(el));
+  }
+</script>

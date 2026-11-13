@@ -1,0 +1,223 @@
+---
+import Icon from '../Icon.astro';
+import { profile } from '../../data/profile';
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="container contact__grid">
+    <div class="contact__intro">
+      <h2 class="contact__title" id="contact-title">Let's build something together.</h2>
+      <p class="contact__text">I'm open to full-stack, software engineering and developer roles, and to freelance projects.</p>
+
+      <ul class="contact__list">
+        <li>
+          <a href={`mailto:${profile.email}`}>
+            <Icon name="mail" />
+            <span>{profile.email}</span>
+          </a>
+        </li>
+        <li>
+          <a href={profile.socials.linkedin} target="_blank" rel="noopener">
+            <Icon name="linkedin" />
+            <span>linkedin.com/in/fariskarkelja</span>
+          </a>
+        </li>
+        <li>
+          <a href={profile.socials.github} target="_blank" rel="noopener">
+            <Icon name="github" />
+            <span>github.com/FarisKarkelja</span>
+          </a>
+        </li>
+        {
+          profile.showPhone && (
+            <li>
+              <a href={`tel:${profile.phone.replace(/\s/g, '')}`}>
+                <Icon name="phone" />
+                <span>{profile.phone}</span>
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+
+    <form class="contact__form" data-contact-form novalidate>
+      <div class="field">
+        <label for="c-name">Your name</label>
+        <input id="c-name" name="user_name" type="text" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label for="c-email">Your email</label>
+        <input id="c-email" name="user_email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="c-message">Message</label>
+        <textarea id="c-message" name="user_message" rows="5" required></textarea>
+      </div>
+      <!-- honeypot: real people never see or fill this -->
+      <div class="visually-hidden" aria-hidden="true">
+        <label for="c-website">Website</label>
+        <input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <button class="btn btn--accent" type="submit" data-contact-submit>
+        Send message
+        <Icon name="send" />
+      </button>
+      <p class="contact__status" data-contact-status role="status" aria-live="polite"></p>
+    </form>
+  </div>
+  <script type="application/json" data-emailjs set:html={JSON.stringify(profile.emailjs)} />
+</section>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2.5rem, 1rem + 5vw, 6rem);
+    align-items: start;
+  }
+  .contact__title {
+    font-size: var(--step-5);
+    font-variation-settings: 'opsz' 96;
+    max-width: 12ch;
+  }
+  .contact__text {
+    margin: 1.8rem 0 2rem;
+    max-width: 34rem;
+    color: var(--text-dim);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .contact__list {
+    list-style: none;
+    margin: 0 0 0 -0.9rem;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+    max-width: 34rem;
+  }
+  .contact__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .contact__list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-height: 3rem;
+    padding: 0.5rem 1.1rem 0.5rem 0.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: background-color 0.25s var(--ease-out), color 0.25s;
+  }
+  .contact__list a:hover {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent-bright);
+  }
+  .contact__list a :global(.icon) {
+    color: var(--accent);
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .contact__form {
+    display: grid;
+    gap: 1.2rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 60%, transparent), color-mix(in srgb, var(--bg) 20%, transparent));
+  }
+  .field {
+    display: grid;
+    gap: 0.45rem;
+  }
+  .field label {
+    font-size: 0.92rem;
+    color: var(--text-dim);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--bg-deep) 60%, transparent);
+    color: var(--text);
+    font: inherit;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+  .field input[aria-invalid='true'],
+  .field textarea[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+  .contact__form .btn {
+    justify-self: start;
+  }
+  .contact__status {
+    margin: 0;
+    min-height: 1.6em;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+  }
+  .contact__status.is-ok {
+    color: var(--signal);
+  }
+  .contact__status.is-error {
+    color: var(--danger);
+  }
+  @media (max-width: 900px) {
+    .contact__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import emailjs from '@emailjs/browser';
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = document.querySelector<HTMLElement>('[data-contact-status]');
+  const submit = document.querySelector<HTMLButtonElement>('[data-contact-submit]');
+  const cfg = JSON.parse(document.querySelector('[data-emailjs]')?.textContent || '{}');
+
+  const setStatus = (text: string, kind: 'ok' | 'error' | '' = '') => {
+    if (!status) return;
+    status.textContent = text;
+    status.className = `contact__status${kind ? ` is-${kind}` : ''}`;
+  };
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if ((form.elements.namedItem('website') as HTMLInputElement)?.value) return; // bot
+    let firstInvalid: HTMLInputElement | HTMLTextAreaElement | null = null;
+    form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]').forEach((el) => {
+      const ok = el.value.trim() !== '' && el.checkValidity();
+      el.setAttribute('aria-invalid', String(!ok));
+      if (!ok && !firstInvalid) firstInvalid = el;
+    });
+    if (firstInvalid) {
+      setStatus('Please fill in your name, a valid email and a message.', 'error');
+      (firstInvalid as HTMLElement).focus();
+      return;
+    }
+    submit && (submit.disabled = true);
+    setStatus('Sending...');
+    try {
+      await emailjs.sendForm(cfg.serviceId, cfg.templateId, form, { publicKey: cfg.publicKey });
+      form.reset();
+      setStatus('Message sent. I will get back to you by email.', 'ok');
+    } catch {
+      setStatus('The message could not be sent. Please email me directly at the address on the left.', 'error');
+    } finally {
+      submit && (submit.disabled = false);
+    }
+  });
+</script>

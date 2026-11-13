@@ -1,0 +1,168 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Devices from '../../components/Devices.astro';
+import Icon from '../../components/Icon.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const order = ['Full-stack', 'Web', 'Freelance', 'AI', 'Mobile', 'Team', 'Systems'];
+const categories = order.filter((c) => projects.some((p) => (p.data.categories as string[]).includes(c)));
+const href = (p: (typeof projects)[number]) =>
+  p.data.caseStudy ? `/work/${p.id}/` : (p.data.links.live ?? p.data.links.repo ?? p.data.links.extra[0]?.url ?? '#');
+const kind = (p: (typeof projects)[number]) => (p.data.caseStudy ? 'Case study' : p.data.links.live ? 'Live site' : 'Code on GitHub');
+---
+
+<Base title="Projects" description="All projects by Faris Karkelja: full-stack web apps, client websites, an Android app, AI and accessibility work.">
+  <section class="section work-page">
+    <div class="container">
+      <header class="section-head">
+        <h1 class="section-title">Projects</h1>
+        <p class="section-intro">Client websites, full-stack apps, mobile, AI and team projects. Case studies open here; the rest link to the live site or the code.</p>
+      </header>
+
+      <div class="filters" role="group" aria-label="Filter projects" data-filters>
+        <button type="button" aria-pressed="true" data-filter="all">All</button>
+        {categories.map((c) => <button type="button" aria-pressed="false" data-filter={c}>{c}</button>)}
+      </div>
+
+      <ul class="grid" data-index>
+        {
+          projects.map((p) => {
+            const external = !p.data.caseStudy;
+            return (
+              <li class="card" data-cats={p.data.categories.join(',')}>
+                <a href={href(p)} {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
+                  <div class="card__mock">
+                    <Devices slugs={[p.id]} titles={[p.data.title]} sizes="(max-width: 760px) 92vw, 44vw" />
+                  </div>
+                  <p class="card__meta">
+                    <span>{p.data.year}</span>
+                    <span class="card__kind">
+                      {kind(p)}
+                      {external && <Icon name="external" />}
+                    </span>
+                  </p>
+                  <h2 class="card__title">{p.data.title}</h2>
+                  <p class="card__tagline">{p.data.tagline}</p>
+                  {p.data.stack.length > 0 && <p class="tech">{p.data.stack.slice(0, 6).join(', ')}</p>}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+      <p class="empty" data-empty hidden>No projects in this category yet.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .work-page {
+    padding-top: calc(var(--header-h) + 4rem);
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .filters button {
+    font: 500 0.9rem/1 var(--sans);
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    padding: 0.65rem 1.05rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .filters button:hover {
+    color: var(--text);
+    border-color: var(--text);
+  }
+  .filters button[aria-pressed='true'] {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2.5rem, 1.5rem + 3vw, 4.5rem) clamp(1.5rem, 1rem + 3vw, 4rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .card a {
+    display: block;
+    text-decoration: none;
+  }
+  .card__mock {
+    margin-bottom: 0.4rem;
+    border-radius: 14px;
+    background: radial-gradient(70% 60% at 50% 45%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 75%);
+  }
+  .card__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 0.6rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  .card__kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent);
+  }
+  .card__kind :global(.icon) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .card__title {
+    font-size: var(--step-3);
+    line-height: 1.05;
+    transition: color 0.25s;
+  }
+  .card a:hover .card__title {
+    color: var(--accent-bright);
+  }
+  .card__tagline {
+    margin: 0.5rem 0 0.4rem;
+    color: var(--text-dim);
+  }
+  .empty {
+    color: var(--muted);
+  }
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  /* phone-only projects use the same frame as the others, so every card has the same height */
+  .card__mock :global(.devices) {
+    aspect-ratio: 16 / 11;
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-index] [data-cats]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const apply = (f: string) => {
+    let shown = 0;
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === f)));
+    cards.forEach((c) => {
+      c.hidden = f !== 'all' && !c.dataset.cats!.split(',').includes(f);
+      if (!c.hidden) shown++;
+    });
+    if (empty) empty.hidden = shown > 0;
+  };
+  buttons.forEach((btn) => btn.addEventListener('click', () => apply(btn.dataset.filter!)));
+</script>

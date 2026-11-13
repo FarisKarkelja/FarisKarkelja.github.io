@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" noindex>
+  <section class="nf container">
+    <p class="nf__code" aria-hidden="true">4<i>0</i>4</p>
+    <h1 class="nf__title">That step isn't in the choreography.</h1>
+    <p class="nf__text">The page you were looking for doesn't exist or has moved.</p>
+    <p class="nf__actions">
+      <a class="btn btn--accent" href="/">Go to the main page</a>
+      <a class="btn" href="/work/">See all projects</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    padding-top: var(--header-h);
+  }
+  .nf__code {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(7rem, 4rem + 18vw, 20rem);
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: var(--surface-2);
+  }
+  .nf__code i {
+    color: var(--accent);
+  }
+  .nf__title {
+    font-size: var(--step-4);
+    margin-top: 1.5rem;
+    max-width: 18ch;
+  }
+  .nf__text {
+    margin: 1.2rem 0 2rem;
+    color: var(--text-dim);
+    font-size: var(--step-1);
+  }
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

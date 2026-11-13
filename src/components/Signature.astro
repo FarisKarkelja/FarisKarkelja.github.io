@@ -1,0 +1,56 @@
+---
+/**
+ * Handwritten signature logo. The outlines were generated once from the open-source
+ * script font "Great Vibes" (SIL Open Font License) and are stored in src/data/signature.json,
+ * so no font file is loaded. `write` makes the signature draw itself when it scrolls into view.
+ */
+import data from '../data/signature.json';
+
+interface Props {
+  variant?: 'full' | 'mono';
+  write?: boolean;
+  class?: string;
+}
+const { variant = 'full', write = false, class: cls } = Astro.props;
+const sig = data[variant];
+---
+
+<svg class:list={['signature', cls, { 'signature--write': write }]} viewBox={sig.viewBox} role="img" aria-label="Faris Karkelja" data-signature={write ? '' : undefined}>
+  <path d={sig.d} fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path>
+</svg>
+
+<style>
+  .signature {
+    display: block;
+    height: 1em;
+    width: auto;
+    overflow: visible;
+  }
+  .signature--write {
+    clip-path: inset(-20% 100% -20% -5%);
+  }
+  .signature--write.is-in {
+    clip-path: inset(-20% -5% -20% -5%);
+    transition: clip-path 1.8s cubic-bezier(0.45, 0, 0.3, 1) 0.15s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .signature--write {
+      clip-path: none;
+    }
+  }
+</style>
+
+<script>
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.querySelector('[data-signature]')?.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      }),
+    { threshold: 0.5 },
+  );
+  // the signature itself is clipped away until it is written, so watch its parent instead
+  document.querySelectorAll('[data-signature]').forEach((el) => el.parentElement && io.observe(el.parentElement));
+</script>

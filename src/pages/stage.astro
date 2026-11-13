@@ -1,0 +1,399 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { stageIntro, programmeNote, performances, stageAwards, offStage, selected, photoCaptions } from '../data/stage';
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/stage/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG}', { eager: true });
+const photos = Object.entries(files)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([path, mod]) => {
+    const file = path.split('/').pop()!;
+    const card = selected.find((s) => s.photo === file);
+    const meta = photoCaptions[file];
+    return {
+      src: mod.default,
+      caption: card ? `${card.title}, ${card.meta}` : meta?.caption,
+      alt: card?.alt ?? meta?.alt ?? 'Faris Karkelja on stage',
+      placeholder: !!card?.placeholder || !!meta?.caption?.startsWith('Caption for'),
+    };
+  });
+---
+
+<Base title="The Stage" description="Faris Karkelja's dance career: partner and formation dancing on TV, at brand events and in national and international competitions since 2019.">
+  <section class="stage-page">
+    <div class="container">
+      <p class="stage-page__back"><a class="link" href="/#stage">Back to the main page</a></p>
+      <p class="stage-page__kicker">{stageIntro.kicker}</p>
+      <h1 class="stage-page__title">{stageIntro.title}</h1>
+      <p class="stage-page__lead">{stageIntro.lead}</p>
+      <p class="stage-page__programme" set:html={programmeNote} />
+
+      <div class="stage-page__cols">
+        <div>
+          <h2 class="stage-page__sub">Awards</h2>
+          <ul class="plain">
+            {
+              stageAwards.map((a) => (
+                <li data-placeholder={String(!!a.placeholder)}>
+                  {a.name}
+                  <span>
+                    {a.org}, {a.year}
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <h2 class="stage-page__sub">On and off stage</h2>
+          <ul class="plain">
+            {offStage.map((line) => <li>{line}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <h2 class="stage-page__sub" id="performances">Performances</h2>
+      <ul class="credits" data-paged data-per-page="6">
+        {
+          performances.map((p) => (
+            <li data-placeholder={String(!!p.placeholder)}>
+              <span class="credits__title">
+                {p.title}
+                {p.achievement && <span class="credits__award">{p.achievement}</span>}
+              </span>
+              <span class="credits__type">{p.type}</span>
+              <span class="credits__year">{p.year}</span>
+              <span class="credits__detail">{p.detail}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <nav class="pager" aria-label="Performance pages" data-pager hidden>
+        <button class="pager__btn pager__arrow" type="button" data-pager-prev aria-label="Previous page"><Icon name="chevron" class="pager__prev" /></button>
+        <span class="pager__nums" data-pager-nums></span>
+        <button class="pager__btn pager__arrow" type="button" data-pager-next aria-label="Next page"><Icon name="chevron" class="pager__next" /></button>
+      </nav>
+
+      <h2 class="stage-page__sub">Photos</h2>
+      <ul class="gallery">
+        {
+          photos.map((p) => (
+            <li data-placeholder={String(p.placeholder)}>
+              <figure>
+                <Image src={p.src} alt={p.alt} widths={[400, 700, 1000]} sizes="(max-width: 700px) 92vw, (max-width: 1100px) 46vw, 31vw" loading="lazy" />
+                {p.caption && <figcaption>{p.caption}</figcaption>}
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
+
+      <aside class="videos">
+        <p class="videos__title">{stageIntro.videoNote}</p>
+        <p>My partners and I keep the recordings private, so they are not published here. I'm happy to share them in a conversation.</p>
+        <a class="btn btn--accent" href="/#contact">Ask for the videos</a>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .stage-page {
+    padding: calc(var(--header-h) + 4rem) 0 clamp(5rem, 3rem + 6vw, 9rem);
+    background: radial-gradient(60% 40rem at 50% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%), var(--bg-deep);
+  }
+  .stage-page .container {
+    max-width: 72rem;
+  }
+  .stage-page__back {
+    font-size: 0.95rem;
+    margin-bottom: 3rem;
+  }
+  .stage-page__back a {
+    color: var(--text-dim);
+  }
+  .stage-page__kicker {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-bright);
+    font-size: var(--step-1);
+    margin-bottom: 0.4rem;
+  }
+  .stage-page__title {
+    font-size: var(--display);
+    font-style: italic;
+    line-height: 0.88;
+    letter-spacing: -0.035em;
+    font-variation-settings: 'opsz' 96;
+  }
+  .stage-page__lead {
+    max-width: 38rem;
+    margin: 2rem 0 0;
+    font-size: var(--step-1);
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .stage-page__programme {
+    margin: 3rem 0 0;
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.35;
+    color: var(--text-dim);
+    max-width: 46rem;
+  }
+  .stage-page__programme :global(b) {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text);
+  }
+  .stage-page__sub {
+    font-size: var(--step-4);
+    font-style: italic;
+    margin: clamp(3.5rem, 2rem + 4vw, 6rem) 0 1.5rem;
+  }
+  .stage-page__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(2rem, 1rem + 4vw, 5rem);
+  }
+  .plain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .plain li {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .plain li span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .credits {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .credits li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 9rem 9rem;
+    align-items: baseline;
+    column-gap: 1.5rem;
+    padding: 1.1rem 0 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .credits__title {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.15;
+  }
+  .credits__award {
+    display: inline-block;
+    margin-left: 0.7rem;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    color: var(--on-accent);
+    background: var(--accent);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    vertical-align: 0.3em;
+  }
+  .credits__type {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-bright);
+  }
+  .credits__year {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-dim);
+  }
+  .credits__detail {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-top: 0.15rem;
+  }
+
+  .gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    columns: 3 17rem;
+    column-gap: 1.25rem;
+  }
+  .gallery li {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+  }
+  .gallery figure {
+    margin: 0;
+  }
+  .gallery :global(img) {
+    width: 100%;
+    border-radius: 6px;
+    filter: grayscale(0.2) contrast(1.04) brightness(0.94);
+    transition: filter 0.6s var(--ease-out);
+  }
+  .gallery li:hover :global(img) {
+    filter: none;
+  }
+  .gallery figcaption {
+    margin-top: 0.6rem;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .videos {
+    margin-top: clamp(3.5rem, 2rem + 4vw, 6rem);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    display: grid;
+    gap: 0.8rem;
+    justify-items: start;
+  }
+  .videos p {
+    margin: 0;
+    color: var(--text-dim);
+    max-width: 44rem;
+  }
+  .videos .videos__title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--text);
+  }
+  .videos .btn {
+    margin-top: 0.6rem;
+  }
+
+  @media (max-width: 760px) {
+    .stage-page__cols {
+      grid-template-columns: 1fr;
+    }
+    .credits li {
+      grid-template-columns: 1fr auto;
+    }
+    .credits__title {
+      grid-column: 1 / -1;
+    }
+    .credits__type {
+      grid-row: 2;
+    }
+    .credits__year {
+      grid-row: 2;
+    }
+    .credits__detail {
+      grid-row: 3;
+    }
+  }
+
+  /* pagination for the performances list */
+  .credits li[hidden] {
+    display: none;
+  }
+  .pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  .pager[hidden] {
+    display: none;
+  }
+  .pager__nums {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .pager :global(.pager__btn) {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.6rem;
+    height: 2.6rem;
+    padding: 0 0.6rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    background: none;
+    color: var(--text);
+    font: 500 0.95rem/1 var(--sans);
+    cursor: pointer;
+    transition:
+      background 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .pager :global(.pager__btn:hover:not(:disabled)) {
+    border-color: var(--accent);
+    color: var(--accent-bright);
+  }
+  .pager :global(.pager__btn[aria-current='page']) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+  }
+  .pager :global(.pager__btn:disabled) {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .pager :global(.pager__prev) {
+    rotate: 90deg;
+  }
+  .pager :global(.pager__next) {
+    rotate: -90deg;
+  }
+</style>
+
+<script>
+  // Shows the performances 6 at a time. Without JavaScript the whole list is visible.
+  const list = document.querySelector<HTMLElement>('[data-paged]');
+  const pager = document.querySelector<HTMLElement>('[data-pager]');
+  if (list && pager) {
+    const items = [...list.children] as HTMLElement[];
+    const per = Number(list.dataset.perPage) || 6;
+    const pages = Math.ceil(items.length / per);
+    const nums = pager.querySelector<HTMLElement>('[data-pager-nums]')!;
+    const prev = pager.querySelector<HTMLButtonElement>('[data-pager-prev]')!;
+    const next = pager.querySelector<HTMLButtonElement>('[data-pager-next]')!;
+    let page = 0;
+
+    const show = (p: number, scroll: boolean) => {
+      page = Math.max(0, Math.min(pages - 1, p));
+      items.forEach((li, i) => (li.hidden = Math.floor(i / per) !== page));
+      nums.querySelectorAll<HTMLButtonElement>('button').forEach((b, i) => {
+        if (i === page) b.setAttribute('aria-current', 'page');
+        else b.removeAttribute('aria-current');
+      });
+      prev.disabled = page === 0;
+      next.disabled = page === pages - 1;
+      // keep the top of the list in view when the page changes
+      if (scroll && list.getBoundingClientRect().top < 0) document.getElementById('performances')?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    if (pages > 1) {
+      for (let i = 0; i < pages; i++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pager__btn';
+        b.textContent = String(i + 1);
+        b.setAttribute('aria-label', `Page ${i + 1} of ${pages}`);
+        b.addEventListener('click', () => show(i, true));
+        nums.append(b);
+      }
+      prev.addEventListener('click', () => show(page - 1, true));
+      next.addEventListener('click', () => show(page + 1, true));
+      pager.hidden = false;
+      show(0, false);
+    }
+  }
+</script>

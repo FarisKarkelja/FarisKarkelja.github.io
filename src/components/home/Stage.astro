@@ -1,0 +1,603 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { stageIntro, lessons, pauses, programmeNote, selected } from '../../data/stage';
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../../assets/photos/stage/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG}', { eager: true });
+const photo = (name: string) => Object.entries(files).find(([path]) => path.endsWith('/' + name))?.[1].default;
+const cards = selected.flatMap((c) => {
+  const src = photo(c.photo);
+  return src ? [{ ...c, src }] : [];
+});
+
+// the stage lamps: position along the truss, sweep range and colour
+const lamps = [
+  { x: 9, from: -30, to: -12, t: 9, c: 'var(--accent)' },
+  { x: 29, from: -16, to: 6, t: 11, c: '#fff6e8' },
+  { x: 50, from: -9, to: 9, t: 13, c: 'var(--accent-bright)' },
+  { x: 71, from: -6, to: 16, t: 10, c: '#fff6e8' },
+  { x: 91, from: 12, to: 30, t: 12, c: 'var(--signal)' },
+];
+const counts = [1, 2, 3, 4, 5, 6, 7, 8];
+---
+
+<section class="stage" id="stage" aria-labelledby="stage-title">
+  <div class="stage__top">
+    <div class="rig" aria-hidden="true">
+      <div class="rig__truss"></div>
+      {
+        lamps.map((l) => (
+          <div class="lamp" style={`left:${l.x}%; --from:${l.from}deg; --to:${l.to}deg; --t:${l.t}s; --c:${l.c}`}>
+            <span class="lamp__beam" />
+            <span class="lamp__can" />
+          </div>
+        ))
+      }
+      <div class="rig__floor"></div>
+    </div>
+
+    <div class="container stage__head">
+      <p class="stage__kicker">{stageIntro.kicker}</p>
+      <h2 class="stage__title" id="stage-title">{stageIntro.title}</h2>
+      <p class="stage__lead">{stageIntro.lead}</p>
+    </div>
+  </div>
+
+  <div class="dance" data-dance>
+    <div class="dance__pin">
+      <canvas class="dance__canvas" data-dance-canvas aria-hidden="true"></canvas>
+
+      <div class="dance__copy">
+        <ol class="counts" aria-hidden="true">
+          {counts.map((n) => <li data-count={n} class:list={[{ 'is-pause': n === 4 || n === 8, 'is-on': n === 1 }]}>{n}</li>)}
+        </ol>
+
+        <div class="lessons">
+          {
+            counts.map((n) => {
+              const lesson = lessons.find((l) => l.count === n);
+              return lesson ? (
+                <article class="lesson" data-lesson={n} class:list={[{ 'is-active': n === 1 }]}>
+                  <p class="lesson__count">Count {n}</p>
+                  <h3>{lesson.title}</h3>
+                  <p class="lesson__text">{lesson.text}</p>
+                </article>
+              ) : (
+                <article class="lesson lesson--pause" data-lesson={n}>
+                  <p class="lesson__count">Count {n}</p>
+                  <p class="lesson__text">{pauses[n as 4 | 8]}</p>
+                </article>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <p class="dance__credit">Two stylized figures, animated in code. Scroll to dance one bar of salsa.</p>
+    </div>
+  </div>
+
+  <div class="container stage__body">
+    <p class="stage__programme" set:html={programmeNote} />
+
+    <div class="perf">
+      <h3 class="perf__title">Selected performances</h3>
+      <ul class="perf__grid">
+        {
+          cards.map((c) => (
+            <li class="perf__card" data-placeholder={String(!!c.placeholder)}>
+              <figure>
+                <Image src={c.src} alt={c.alt} widths={[400, 640, 900]} sizes="(max-width: 700px) 46vw, (max-width: 1100px) 46vw, 22vw" loading="lazy" />
+                <figcaption>
+                  <span class="perf__name">{c.title}</span>
+                  <span class="perf__meta">{c.meta}</span>
+                </figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="stage__foot">
+      <a class="btn btn--accent" href="/stage/">View all performances</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .stage {
+    position: relative;
+    padding-bottom: clamp(5rem, 3rem + 6vw, 9rem);
+    background: linear-gradient(to bottom, var(--bg), var(--bg-deep) 14rem, var(--bg-deep) calc(100% - 14rem), var(--bg));
+    isolation: isolate;
+  }
+
+  /* ---------- header under the lighting rig ---------- */
+  .stage__top {
+    position: relative;
+    min-height: min(100svh, 60rem);
+    display: grid;
+    align-items: center;
+    padding-block: 9rem 6rem;
+    overflow: hidden;
+  }
+  .rig {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .rig__truss {
+    position: absolute;
+    inset: 3.2rem 0 auto;
+    height: 18px;
+    opacity: 0.55;
+    background:
+      linear-gradient(var(--muted), var(--muted)) 0 0 / 100% 2px no-repeat,
+      linear-gradient(var(--muted), var(--muted)) 0 100% / 100% 2px no-repeat,
+      repeating-linear-gradient(60deg, transparent 0 9px, var(--muted) 9px 10.5px),
+      repeating-linear-gradient(-60deg, transparent 0 9px, var(--muted) 9px 10.5px);
+  }
+  .lamp {
+    position: absolute;
+    top: calc(3.2rem + 16px);
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+    rotate: var(--from);
+    animation: sweep var(--t) ease-in-out infinite alternate;
+  }
+  @keyframes sweep {
+    from {
+      rotate: var(--from);
+    }
+    to {
+      rotate: var(--to);
+    }
+  }
+  .lamp__can {
+    position: absolute;
+    left: -13px;
+    top: -4px;
+    width: 26px;
+    height: 34px;
+    border-radius: 5px 5px 9px 9px;
+    background: linear-gradient(90deg, #0b0b0d, #3a3a40 45%, #0b0b0d);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08);
+  }
+  .lamp__can::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    bottom: -3px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+      0 0 18px 6px color-mix(in srgb, var(--c) 70%, transparent),
+      0 0 60px 20px color-mix(in srgb, var(--c) 35%, transparent);
+  }
+  .lamp__beam {
+    position: absolute;
+    top: 26px;
+    left: calc(var(--w) / -2);
+    --w: clamp(15rem, 34vw, 34rem);
+    width: var(--w);
+    height: 125vh;
+    clip-path: polygon(47.5% 0, 52.5% 0, 100% 100%, 0 100%);
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--c) 46%, transparent), color-mix(in srgb, var(--c) 13%, transparent) 45%, transparent 88%);
+    filter: blur(7px);
+    mix-blend-mode: screen;
+  }
+  /* light pooling on the stage floor */
+  .rig__floor {
+    position: absolute;
+    inset: auto -10% -18% -10%;
+    height: 46%;
+    background: radial-gradient(50% 50% at 50% 60%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%);
+  }
+  .stage__head {
+    position: relative;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+  }
+  .stage__kicker {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-bright);
+    font-size: var(--step-1);
+    margin-bottom: 0.5rem;
+  }
+  .stage__title {
+    font-size: clamp(4rem, 1rem + 13vw, 13rem);
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+    font-variation-settings: 'opsz' 96;
+    font-style: italic;
+    text-shadow: 0 0 80px color-mix(in srgb, var(--accent-bright) 30%, transparent);
+  }
+  .stage__lead {
+    max-width: 38rem;
+    margin: 1.8rem 0 0;
+    color: var(--text-dim);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  /* ---------- the dance: a pinned 3D scene driven by the scroll ---------- */
+  .dance {
+    position: relative;
+    height: 620vh;
+  }
+  .dance__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 46% at 33% 74%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
+      radial-gradient(40% 60% at 75% 0%, color-mix(in srgb, var(--signal) 6%, transparent), transparent 70%);
+  }
+  .dance__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s var(--ease-out);
+  }
+  .dance__canvas.is-ready {
+    opacity: 1;
+  }
+  .dance__copy {
+    position: absolute;
+    top: 50%;
+    right: max(var(--gutter), calc((100vw - var(--max)) / 2));
+    width: min(30rem, 36vw);
+    translate: 0 -46%;
+  }
+  .counts {
+    display: flex;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0 0 2.2rem;
+    padding: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+  }
+  .counts li {
+    width: 2.2rem;
+    height: 2.2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--muted);
+    transition: color 0.25s, background-color 0.25s, box-shadow 0.25s;
+  }
+  .counts li.is-pause {
+    font-size: 0.8em;
+    box-shadow: inset 0 0 0 1px var(--rule-strong);
+    scale: 0.82;
+  }
+  .counts li.is-on {
+    color: var(--on-accent);
+    background: var(--accent);
+  }
+  .counts li.is-pause.is-on {
+    color: var(--text);
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--accent);
+  }
+  .lessons {
+    display: grid;
+  }
+  .lesson {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 0.45s var(--ease-out), transform 0.6s var(--ease-out);
+    pointer-events: none;
+  }
+  .lesson.is-active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .lesson__count {
+    color: var(--accent);
+    font-family: var(--serif);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+  .lesson h3 {
+    font-size: var(--step-4);
+    margin-bottom: 1rem;
+  }
+  .lesson__text {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .lesson--pause .lesson__text {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-2);
+    line-height: 1.35;
+    color: var(--text);
+  }
+  .dance__credit {
+    position: absolute;
+    right: max(var(--gutter), calc((100vw - var(--max)) / 2));
+    bottom: 1.5rem;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  /* ---------- below the dance ---------- */
+  .stage__body {
+    display: grid;
+    gap: clamp(3rem, 2rem + 4vw, 5.5rem);
+    padding-top: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .stage__programme {
+    max-width: 52rem;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    line-height: 1.3;
+    font-variation-settings: 'opsz' 40;
+    color: var(--text-dim);
+  }
+  .stage__programme :global(b) {
+    font-weight: 400;
+    color: var(--text);
+    font-style: italic;
+  }
+  .perf__title {
+    font-size: var(--step-4);
+    font-style: italic;
+    text-align: center;
+    margin-bottom: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+  .perf__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .perf__card:nth-child(even) {
+    margin-top: 2.5rem;
+  }
+  .perf__card figure {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 3 / 4;
+    border-radius: 999px 999px 6px 6px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .perf__card :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.25) contrast(1.05) brightness(0.9);
+    transition: filter 0.6s var(--ease-out), transform 1.2s var(--ease-out);
+  }
+  .perf__card:hover :global(img) {
+    filter: none;
+    transform: scale(1.04);
+  }
+  .perf__card figcaption {
+    position: absolute;
+    inset: auto 0 0;
+    display: grid;
+    gap: 0.2rem;
+    padding: 4rem 1.1rem 1.1rem;
+    background: linear-gradient(to top, color-mix(in srgb, var(--bg-deep) 92%, transparent) 30%, transparent);
+  }
+  .perf__name {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.15;
+  }
+  .perf__meta {
+    color: var(--accent-bright);
+    font-size: 0.9rem;
+  }
+  .stage__foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem 2rem;
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+  }
+
+  @media (max-width: 1100px) {
+    .perf__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 900px) {
+    .dance {
+      height: 540vh;
+    }
+    .dance__copy {
+      top: auto;
+      bottom: 3.2rem;
+      left: var(--gutter);
+      right: var(--gutter);
+      width: auto;
+      translate: none;
+      min-height: 13.5rem;
+    }
+    .dance__copy::before {
+      content: '';
+      position: absolute;
+      inset: -5rem calc(var(--gutter) * -1) -3.2rem;
+      z-index: -1;
+      background: linear-gradient(to top, var(--bg-deep) 62%, transparent);
+    }
+    .counts {
+      margin-bottom: 0.9rem;
+      gap: 0.15rem;
+    }
+    .counts li {
+      width: 1.9rem;
+      height: 1.9rem;
+    }
+    .lesson h3 {
+      font-size: var(--step-3);
+      margin-bottom: 0.4rem;
+    }
+    .lesson__count {
+      margin-bottom: 0.2rem;
+    }
+    .lesson__text {
+      font-size: var(--step-0);
+    }
+    .lesson--pause .lesson__text {
+      font-size: var(--step-1);
+    }
+    .dance__credit {
+      display: none;
+    }
+    .dance__pin {
+      background: radial-gradient(90% 40% at 50% 52%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%);
+    }
+    .dance__canvas {
+      height: 64%;
+    }
+  }
+  @media (max-width: 560px) {
+    .perf__card:nth-child(even) {
+      margin-top: 1.5rem;
+    }
+    .perf__card figcaption {
+      padding: 3rem 0.8rem 0.8rem;
+    }
+    .perf__name {
+      font-size: 1.05rem;
+    }
+    .perf__meta {
+      font-size: 0.8rem;
+    }
+  }
+
+  /* Reduced motion: no pinning, the final pose, and every lesson as plain text */
+  @media (prefers-reduced-motion: reduce) {
+    .lamp {
+      animation: none;
+    }
+    .dance {
+      height: auto;
+    }
+    .dance__pin {
+      position: static;
+      height: auto;
+      display: grid;
+      overflow: visible;
+    }
+    .dance__canvas {
+      position: relative;
+      height: 70svh;
+    }
+    .dance__copy {
+      position: static;
+      width: min(100% - 2 * var(--gutter), 46rem);
+      margin: 0 auto;
+      translate: none;
+      min-height: 0;
+    }
+    .dance__copy::before,
+    .counts,
+    .dance__credit,
+    .lesson--pause {
+      display: none;
+    }
+    .lessons {
+      gap: 2rem;
+    }
+    .lesson {
+      grid-area: auto;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  import { ScrollTrigger, prefersReducedMotion } from '../../scripts/motion';
+  import type { StageScene } from '../../scripts/stage-scene';
+
+  const root = document.querySelector<HTMLElement>('[data-dance]');
+  const canvas = root?.querySelector<HTMLCanvasElement>('[data-dance-canvas]');
+  if (root && canvas) {
+    const lessons = root.querySelectorAll<HTMLElement>('[data-lesson]');
+    const counts = root.querySelectorAll<HTMLElement>('[data-count]');
+    let scene: StageScene | null = null;
+    let u = 0;
+
+    // Three.js and the dancers are only downloaded when the stage is about to scroll into view.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        import('../../scripts/stage-scene')
+          .then((m) => {
+            scene = m.initStageScene(canvas);
+            scene?.setCount(u);
+            if (scene) canvas.classList.add('is-ready');
+            (window as unknown as { __stage?: StageScene | null }).__stage = scene;
+          })
+          .catch(() => {
+            /* no WebGL: the text still tells the story */
+          });
+      },
+      { rootMargin: '120% 0px' },
+    );
+    io.observe(root);
+
+    // Scroll -> musical count. The steps get more scroll than the two pauses.
+    const weights = [1, 1, 1, 0.6, 1, 1, 1, 0.85];
+    const total = weights.reduce((a, b) => a + b, 0);
+    const toCount = (p: number) => {
+      let x = Math.min(Math.max(p, 0), 1) * total;
+      for (let i = 0; i < weights.length; i++) {
+        if (x <= weights[i]) return i + x / weights[i];
+        x -= weights[i];
+      }
+      return 7.999;
+    };
+    const show = (count: number) => {
+      lessons.forEach((l) => l.classList.toggle('is-active', Number(l.dataset.lesson) === count));
+      counts.forEach((c) => c.classList.toggle('is-on', Number(c.dataset.count) === count));
+    };
+
+    if (!prefersReducedMotion()) {
+      ScrollTrigger.create({
+        trigger: root,
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: (self) => {
+          u = toCount(self.progress);
+          scene?.setCount(u);
+          show(Math.min(8, Math.floor(u) + 1));
+        },
+      });
+    }
+  }
+</script>

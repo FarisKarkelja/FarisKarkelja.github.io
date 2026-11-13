@@ -1,0 +1,102 @@
+---
+/* Certificates as a plain list (copies on request), plus volunteering. */
+import { certificates, certificatesNote, volunteering } from '../../data/profile';
+---
+
+<section class="section certs" id="certificates" aria-labelledby="certs-title">
+  <div class="container">
+    <header class="section-head">
+      <h2 class="section-title" id="certs-title">Certificates</h2>
+    </header>
+
+    <ul class="vol">
+      {
+        certificates.map((c) => (
+          <li data-placeholder={String(!!c.placeholder)}>
+            <p class="vol__when">{c.year}</p>
+            <div>
+              <h3>{c.name}</h3>
+              <p class="vol__org">{c.org}</p>
+              <p class="vol__detail">{c.detail}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="certs__note">{certificatesNote}</p>
+  </div>
+</section>
+
+<section class="section volunteering" id="volunteering" aria-labelledby="vol-title">
+  <div class="container">
+    <header class="section-head">
+      <h2 class="section-title" id="vol-title">Volunteering</h2>
+    </header>
+    <ul class="vol">
+      {
+        volunteering.map((v) => (
+          <li data-placeholder={String(!!v.placeholder)}>
+            <p class="vol__when">{v.start === v.end ? v.start : `${v.start} to ${v.end}`}</p>
+            <div>
+              <h3>{v.role}</h3>
+              <p class="vol__org">{v.org}</p>
+              <p class="vol__detail">{v.detail}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .certs {
+    padding-bottom: 0;
+  }
+  .certs__note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1.5rem;
+    margin: 1.6rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .vol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .vol li {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 0.5rem 2.5rem;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .vol__when {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .vol h3 {
+    font-size: var(--step-2);
+  }
+  .vol__org {
+    margin: 0.3rem 0 0.5rem;
+    color: var(--accent);
+  }
+  .vol__detail {
+    margin: 0;
+    color: var(--text-dim);
+    max-width: var(--measure);
+  }
+  @media (max-width: 760px) {
+    .vol li {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../../assets/photos/portrait/portrait.jpg';
+import { profile } from '../../data/profile';
+const [lead, ...rest] = profile.bio;
+---
+
+<section class="section about" id="about" aria-labelledby="about-title">
+  <div class="container about__grid">
+    <div class="about__portrait">
+      <div class="arch about__frame">
+        <Image src={portrait} alt="Portrait of Faris Karkelja" widths={[360, 560, 760]} sizes="(max-width: 860px) 70vw, 28vw" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="about__text">
+      <h2 class="section-title" id="about-title">About</h2>
+      <p class="about__lead">{lead}</p>
+      {rest.map((p) => <p>{p}</p>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2.5rem, 1rem + 6vw, 7rem);
+    align-items: start;
+  }
+  .about__portrait {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    padding: 11px;
+  }
+  .about__frame {
+    aspect-ratio: 3 / 4;
+  }
+  .about__frame :global(img) {
+    object-position: 50% 18%;
+    filter: saturate(0.85) contrast(1.04);
+  }
+  .about__text {
+    max-width: var(--measure);
+  }
+  .about__text .section-title {
+    margin-bottom: 2rem;
+  }
+  .about__lead {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 1.1rem + 0.6vw, 1.55rem);
+    line-height: 1.4;
+    font-variation-settings: 'opsz' 28;
+    margin-bottom: 1.4rem;
+  }
+  .about__text p:not(.about__lead) {
+    color: var(--text-dim);
+  }
+  @media (max-width: 860px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+    }
+    .about__portrait {
+      position: static;
+      width: min(100%, 20rem);
+      margin-inline: auto;
+    }
+  }
+</style>

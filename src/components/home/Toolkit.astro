@@ -1,0 +1,175 @@
+---
+import * as si from 'simple-icons';
+import { toolkit } from '../../data/profile';
+
+type SI = { title: string; path: string };
+const icons = si as unknown as Record<string, SI>;
+const find = (slug: string) => icons['si' + slug[0].toUpperCase() + slug.slice(1)];
+
+// every tool with a logo goes into the moving strip, split over two rows
+const withLogo = toolkit.flatMap((g) => g.items).flatMap((t) => (t.icon && find(t.icon) ? [{ name: t.name, path: find(t.icon).path }] : []));
+const half = Math.ceil(withLogo.length / 2);
+const rows = [withLogo.slice(0, half), withLogo.slice(half)];
+const main = toolkit.slice(0, 5);
+const also = toolkit[5];
+---
+
+<section class="section toolkit" id="toolkit" aria-labelledby="toolkit-title">
+  <div class="container">
+    <header class="section-head">
+      <h2 class="section-title" id="toolkit-title">Toolkit</h2>
+      <p class="section-intro">What I use day to day, and what I have used in real projects and coursework.</p>
+    </header>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    {
+      rows.map((row, r) => (
+        <div class="marquee__row" style={`--dur: ${row.length * 3.4}s`} data-reverse={r === 1 ? '' : undefined}>
+          {[0, 1].map(() => (
+            <ul class="marquee__track">
+              {row.map((t) => (
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d={t.path} />
+                  </svg>
+                  <span>{t.name}</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="container">
+    <dl class="tools">
+      {
+        main.map((g) => (
+          <div class="tools__row">
+            <dt>{g.group}</dt>
+            <dd>
+              <ul>
+                {g.items.map((t) => <li>{t.name}</li>)}
+              </ul>
+            </dd>
+          </div>
+        ))
+      }
+      <div class="tools__row tools__row--also">
+        <dt>{also.group}</dt>
+        <dd>{also.items.map((t) => t.name).join(', ')}</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<style>
+  /* ---------- moving logo strip ---------- */
+  .marquee {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .marquee__row {
+    display: flex;
+    overflow: hidden;
+  }
+  .marquee__track {
+    flex: none;
+    display: flex;
+    gap: 0.9rem;
+    padding: 0 0.9rem 0 0;
+    margin: 0;
+    list-style: none;
+    animation: slide var(--dur) linear infinite;
+  }
+  .marquee__row[data-reverse] .marquee__track {
+    animation-direction: reverse;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  @keyframes slide {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  .marquee__track li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.8rem 1.3rem 0.8rem 1.1rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    white-space: nowrap;
+    font-size: 1rem;
+    color: var(--text);
+  }
+  .marquee__track svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: var(--accent);
+    flex: none;
+  }
+
+  /* ---------- the full list, for people (and ATS) who want text ---------- */
+  .tools {
+    margin: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .tools__row {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 0.5rem 2rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .tools dt {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    color: var(--accent);
+  }
+  .tools dd {
+    margin: 0;
+  }
+  .tools dd ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tools__row--also dd {
+    color: var(--text-dim);
+  }
+  @media (max-width: 700px) {
+    .tools__row {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__row {
+      flex-wrap: wrap;
+    }
+    .marquee__track {
+      animation: none;
+      flex-wrap: wrap;
+      padding-inline: var(--gutter);
+    }
+    .marquee__track + .marquee__track {
+      display: none;
+    }
+    .marquee {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+  }
+</style>

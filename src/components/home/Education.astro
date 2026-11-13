@@ -1,0 +1,185 @@
+---
+import { Image } from 'astro:assets';
+import graduation from '../../assets/photos/portrait/graduation.jpg';
+import { education, languages, awards } from '../../data/profile';
+---
+
+<section class="section education" id="education" aria-labelledby="education-title">
+  <div class="container">
+    <div class="edu__grid">
+      <div class="edu__main">
+      <header class="section-head">
+        <h2 class="section-title" id="education-title">Education</h2>
+      </header>
+      <ol class="degrees" reversed>
+        {
+          education.map((e) => (
+            <li>
+              <p class="degrees__when">
+                {e.start} to {e.end}
+              </p>
+              <h3>{e.degree}</h3>
+              <p class="degrees__school">
+                {e.school}, {e.place}
+              </p>
+              {e.detail && <p class="degrees__detail">{e.detail}</p>}
+            </li>
+          ))
+        }
+      </ol>
+      </div>
+
+      <aside class="edu__side">
+        <div class="edu__photo">
+          <div class="arch">
+            <Image src={graduation} alt="Faris Karkelja at his graduation" widths={[360, 560, 760]} sizes="(max-width: 900px) 70vw, 28vw" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="edu__block">
+          <h3>Languages</h3>
+          <dl>
+            {
+              languages.map((l) => (
+                <div>
+                  <dt>{l.name}</dt>
+                  <dd>{l.level}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+
+        <div class="edu__block">
+          <h3>Awards</h3>
+          <ul>
+            {
+              awards.map((a) => (
+                <li data-placeholder={String(!!a.placeholder)}>
+                  {a.name}
+                  <span>
+                    {a.org}, {a.year}
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .edu__grid {
+    display: grid;
+    /* mirrors the About grid, so the two arch photos are exactly the same size */
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2.5rem, 1rem + 6vw, 7rem);
+  }
+  .degrees {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+    align-self: start;
+  }
+  .degrees li {
+    padding: 1.8rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .degrees__when {
+    margin: 0 0 0.5rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  .degrees h3 {
+    font-size: var(--step-3);
+    font-variation-settings: 'opsz' 60;
+  }
+  .degrees__school {
+    margin: 0.4rem 0 0;
+    color: var(--accent);
+  }
+  .degrees__detail {
+    margin: 0.7rem 0 0;
+    color: var(--text-dim);
+    max-width: var(--measure);
+  }
+  .edu__side {
+    display: grid;
+    gap: 2.4rem;
+    align-content: start;
+  }
+  .edu__photo {
+    padding: 11px;
+  }
+  .edu__photo .arch {
+    aspect-ratio: 3 / 4;
+    background: radial-gradient(80% 70% at 50% 35%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 70%), var(--surface);
+  }
+  .edu__photo :global(img) {
+    object-position: 50% 10%;
+  }
+  .edu__block h3 {
+    font-size: var(--step-2);
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+  .edu__block dl,
+  .edu__block ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .edu__block dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .edu__block dd {
+    margin: 0;
+    color: var(--muted);
+    text-align: right;
+  }
+  .edu__block li {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .edu__block li span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  @media (min-width: 901px) {
+    /* the side column is exactly as tall as the degrees: the photo takes the height that is left
+       (its bottom is cropped if needed), so Awards ends on the same line as the last degree */
+    .edu__side {
+      display: flex;
+      flex-direction: column;
+    }
+    .edu__photo {
+      position: relative;
+      flex: 1 1 0;
+      min-height: 16rem;
+      padding: 0;
+    }
+    .edu__photo .arch {
+      position: absolute;
+      inset: 11px;
+      aspect-ratio: auto;
+    }
+  }
+  @media (max-width: 900px) {
+    .edu__grid {
+      grid-template-columns: 1fr;
+    }
+    .edu__photo {
+      width: min(100%, 20rem);
+      margin-inline: auto;
+    }
+  }
+</style>

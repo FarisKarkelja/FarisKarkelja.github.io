@@ -1,0 +1,159 @@
+---
+import Icon from '../Icon.astro';
+import { experience, type Experience } from '../../data/profile';
+
+const main = experience.filter((e) => !e.more);
+const more = experience.filter((e) => e.more);
+
+// one row of the timeline, shared by both lists
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function row(e: Experience) {
+  return `
+    <p class="timeline__when"><span>${esc(e.start)}</span><span class="timeline__to">${esc(e.end)}</span></p>
+    <div class="timeline__body">
+      <h3 class="timeline__role">${esc(e.role)}</h3>
+      <p class="timeline__org">${esc(e.org)}<span>, ${esc(e.place)}</span></p>
+      <ul class="timeline__points">${e.points.map((pt) => `<li>${esc(pt)}</li>`).join('')}</ul>
+    </div>
+    <p class="timeline__type">${esc(e.type)}</p>`;
+}
+---
+
+<section class="section experience" id="experience" aria-labelledby="experience-title">
+  <div class="container">
+    <header class="section-head">
+      <h2 class="section-title" id="experience-title">Experience</h2>
+      <p class="section-intro">Freelance client work, three internships in banking, telecom and product development, and a semester of teaching.</p>
+    </header>
+
+    <ol class="timeline" reversed>
+      {main.map((e) => <li class="timeline__item" set:html={row(e)} />)}
+    </ol>
+
+    {
+      more.length > 0 && (
+        <details class="more">
+          <summary>
+            <span class="more__closed">Show {more.length} more roles</span>
+            <span class="more__open">Show fewer roles</span>
+            <Icon name="chevron" />
+          </summary>
+          <ol class="timeline timeline--more">
+            {more.map((e) => <li class="timeline__item" data-placeholder={String(!!e.placeholder)} set:html={row(e)} />)}
+          </ol>
+        </details>
+      )
+    }
+  </div>
+</section>
+
+<style is:global>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .timeline__item {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr) 8rem;
+    gap: 1rem 2.5rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .timeline__when {
+    margin: 0;
+    display: grid;
+    align-content: start;
+    gap: 0.15rem;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.95rem;
+  }
+  .timeline__to {
+    color: var(--muted);
+  }
+  .timeline__to::before {
+    content: 'to ';
+    font-family: var(--serif);
+    font-style: italic;
+  }
+  .timeline__role {
+    font-size: var(--step-3);
+    font-variation-settings: 'opsz' 60;
+  }
+  .timeline__org {
+    margin: 0.35rem 0 0.9rem;
+    color: var(--accent);
+  }
+  .timeline__org span {
+    color: var(--muted);
+  }
+  .timeline__points {
+    margin: 0 0 0.8rem;
+    padding: 0;
+    list-style: none;
+    max-width: var(--measure);
+    color: var(--text-dim);
+  }
+  .timeline__points li + li {
+    margin-top: 0.4rem;
+  }
+  .timeline__type {
+    margin: 0;
+    text-align: right;
+    color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
+  }
+  .timeline--more {
+    margin-top: 1.5rem;
+  }
+
+  .more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    margin-block: 1.75rem 0.25rem;
+    padding: 0.7rem 1.35rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    font: 500 0.95rem/1 var(--sans);
+    cursor: pointer;
+    list-style: none;
+    transition: border-color 0.25s;
+  }
+  .more summary::-webkit-details-marker {
+    display: none;
+  }
+  .more summary:hover {
+    border-color: var(--text);
+  }
+  .more summary .icon {
+    transition: transform 0.3s var(--ease-out);
+  }
+  .more[open] summary .icon {
+    transform: rotate(180deg);
+  }
+  .more__open,
+  .more[open] .more__closed {
+    display: none;
+  }
+  .more[open] .more__open {
+    display: inline;
+  }
+  @media (max-width: 760px) {
+    .timeline__item {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+    .timeline__when {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .timeline__type {
+      display: none;
+    }
+  }
+</style>
