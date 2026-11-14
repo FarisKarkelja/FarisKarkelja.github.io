@@ -2,11 +2,12 @@
 title: EcoTrack
 tagline: AI-powered smart traffic pollution management system
 summary: A hackathon project at the Google Cloud AI Startup Factory - I put the team together and we built a system that links vehicles, emissions and air quality data, with AI-generated pollution reports.
-year: '2025'
+year: "2025"
 role: Team organizer & frontend developer (team of 3)
 context: Google Cloud AI Startup Factory hackathon
 categories: [AI, Full-stack, Team]
-stack: [Next.js, TypeScript, Node.js, Express, Gemini, Firestore, Google Cloud Run]
+stack:
+  [Next.js, TypeScript, Node.js, Express, Gemini, Firestore, Google Cloud Run]
 featured: 4
 order: 4
 highlights:

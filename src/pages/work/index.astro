@@ -9,7 +9,7 @@ const order = ['Full-stack', 'Web', 'Freelance', 'AI', 'Mobile', 'Team', 'System
 const categories = order.filter((c) => projects.some((p) => (p.data.categories as string[]).includes(c)));
 const href = (p: (typeof projects)[number]) =>
   p.data.caseStudy ? `/work/${p.id}/` : (p.data.links.live ?? p.data.links.repo ?? p.data.links.extra[0]?.url ?? '#');
-const kind = (p: (typeof projects)[number]) => (p.data.caseStudy ? 'Case study' : p.data.links.live ? 'Live site' : 'Code on GitHub');
+const kind = (p: (typeof projects)[number]) => (p.data.links.live ? 'Live site' : p.data.caseStudy ? 'Case study' : 'Code on GitHub');
 ---
 
 <Base title="Projects" description="All projects by Faris Karkelja: full-stack web apps, client websites, an Android app, AI and accessibility work.">

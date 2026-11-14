@@ -2,15 +2,15 @@
 title: Autopflege Rottweil
 tagline: Website for a professional car detailing studio in Germany
 summary: A German-language website for a car detailing studio in Rottweil, delivered end to end as a freelancer - from the first message with the client to design, build, hosting, launch and maintenance.
-year: '2026'
+year: "2026"
 role: Freelance web developer - full SDLC
-context: Freelance, paying client in Germany
+context: Freelance, client in Germany
 categories: [Freelance, Web]
 stack: [HTML, CSS, JavaScript, Bootstrap, Figma, Web hosting, DNS and SSL]
 featured: 3
 order: 3
 highlights:
-  - Live for a paying client in Germany, in German
+  - Live for a client in Germany, in German
   - Requirements, design, build, hosting and maintenance - all owned by me
   - Tested on phones, tablets and desktops before and after launch
 links:

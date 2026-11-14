@@ -1,18 +1,32 @@
 ---
 title: IBO & CO 2.0
 tagline: Full-stack rebuild of a live pharmacy web shop
-summary: A ground-up rewrite of the web shop I built for a Sarajevo pharmacy with two branches - from PHP and jQuery-era patterns to React, TypeScript and a tested Node.js API.
-year: '2026'
+summary: A complete TypeScript rewrite of the web shop I built for a Sarajevo pharmacy with two locations - catalogue, cart, in-store pickup orders and reviews for customers, and an admin panel with sales charts for staff.
+year: "2026"
 role: Solo - architecture, frontend, backend, tests
 context: Personal rebuild of a production client project
 categories: [Full-stack, Web]
-stack: [React, TypeScript, Vite, Node.js, Express, MySQL, Vitest, Supertest]
+stack:
+  [
+    React,
+    TypeScript,
+    Vite,
+    Tailwind CSS,
+    TanStack Query,
+    Node.js,
+    Express,
+    Drizzle ORM,
+    Zod,
+    MySQL,
+    Vitest,
+    Supertest,
+  ]
 featured: 2
 order: 2
 highlights:
-  - Version 1 is live for a real pharmacy with two branches
-  - Typed end to end with TypeScript
-  - Automated API tests with Vitest and Supertest
+  - Every v1 feature kept, the whole stack rebuilt in TypeScript
+  - Admin panel with revenue and order charts, order, product and user management
+  - One shared validation layer for forms and API, documented with OpenAPI
 links:
   repo: https://github.com/FarisKarkelja/ibo-co-pharmacy
   extra:
@@ -24,19 +38,29 @@ todo:
 
 ## Context
 
-IBO & CO started as my web programming course project and became the real website of a pharmacy in Sarajevo with two branches: product catalogue, shop, user registration and login, backed by a REST API. Version 1 is built with HTML, CSS, JavaScript and Bootstrap on the frontend, and PHP (FlightPHP) with a layered routes / services / DAO backend on MySQL.
+IBO & CO started as my web programming course project and became the real website of a pharmacy in Sarajevo with two locations. Version 1 is a jQuery single-page app with a PHP REST API on MySQL. Version 2 keeps every feature and the pharmacy's visual identity, and rebuilds everything in TypeScript.
 
-## Why rebuild it
+## What customers get
 
-Version 1 works, but it was written while I was learning. Version 2 is the same product rebuilt the way I would build it today:
+- A catalogue with categories, search, sorting, filters and pagination
+- Product pages with related products and a notice for prescription-only medicines
+- A cart with VAT breakdown and a choice of pickup location, then checkout for in-store pickup
+- A profile with order history, order cancellation, password change and account deletion
+- Reviews with star ratings, and a contact form
 
-- **Type safety** across the frontend and the API with TypeScript.
-- **A component-based UI** in React (Vite) instead of a hand-rolled SPA library.
-- **A tested backend**: Node.js and Express on MySQL, with automated API tests (Vitest and Supertest) so changes can be made without fear.
-- **Stronger security** around authentication and input handling.
+## What staff get
 
-The pharmacy's visual identity stays the same, so the rewrite is a technical upgrade, not a redesign.
+An admin panel with a dashboard (revenue, orders, users, ratings, unread messages), charts for daily orders, revenue and sales by category, and management of orders, products, categories with image upload, users and roles, reviews and contact messages.
+
+## How it is built
+
+- **Monorepo** with npm workspaces: client, server and one shared package with validation schemas, types and business rules used by both sides
+- **Frontend:** React 19, Vite, React Router, TanStack Query and Table, React Hook Form, Tailwind CSS and accessible Radix UI components
+- **Backend:** Express 5 with routes, controllers, services and repositories organized by feature; Drizzle ORM on MySQL with versioned migrations
+- **Security:** JWT in an httpOnly cookie, bcrypt, Helmet, rate limiting and input validation with Zod
+- **Quality:** Vitest and Supertest integration tests, and Swagger docs generated from the same schemas
+- **Performance:** code splitting, so the admin panel and charts load only for admins
 
 ## What it shows
 
-Taking an existing production system, understanding why it is built the way it is, and moving it to a cleaner architecture without changing what the client relies on - the kind of work most real software engineering is.
+Taking a system that is already in production, understanding why it is built the way it is, and moving it to a cleaner, typed, tested architecture without changing what the client relies on.
