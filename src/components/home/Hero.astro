@@ -18,7 +18,14 @@ const cols = Math.max(cmd.n + 8, ...rows.map((r) => r.n));
 const end = t + 120;
 
 // The line above the buttons: a fixed start, then what I build, rotating every few seconds.
-const builds = ['web apps, end to end.', 'websites for real clients.', 'REST APIs and databases.', 'interfaces everyone can use.'];
+const builds = [
+  'web apps and websites.',
+  'clean APIs and solid databases.',
+  'tested, maintainable software.',
+  'AI tools that help people.',
+  'interfaces everyone can use.',
+  'tools that make work easier.',
+];
 ---
 
 <section class="hero" aria-labelledby="hero-name">
@@ -35,7 +42,7 @@ const builds = ['web apps, end to end.', 'websites for real clients.', 'REST API
     <div class="hero__bottom">
       <div class="hero__left">
       <p class="hero__role">
-        <span class="hero__role-fixed">Full-stack software engineer.</span>
+        <span class="hero__role-fixed">Software engineer</span>
         <span class="hero__role-line">I build <span class="hero__rot" data-rot aria-hidden="true">{builds.map((b, i) => <span class:list={{ 'is-on': i === 0 }}>{b}</span>)}</span><span class="visually-hidden">{builds.join(' ')}</span></span>
       </p>
       <div class="hero__ctas">

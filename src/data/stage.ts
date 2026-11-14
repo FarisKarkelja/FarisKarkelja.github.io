@@ -12,7 +12,7 @@
 export const stageIntro = {
   kicker: "Off-screen, on stage - since 2019",
   title: "The Stage",
-  lead: "Professional dancer with Dance Studio Aster Sarajevo: partner dancing and formation work, on TV, at brand events and in national and international competitions.",
+  lead: "Professional dancer with Dance Studio Aster. Partner dancing and formation work, on TV, at brand events and in national and international competitions.",
   videoNote: "Performance videos are available on request.",
 };
 
@@ -29,22 +29,22 @@ export const lessons = [
   {
     count: 2,
     title: "Teamwork",
-    text: "Partner dancing only works when two people move as one. I listen first, adapt, and leave my ego in the dressing room.",
+    text: "Partner dancing only works when two people move as one. I listen first, adapt, and strive for the best result for the team.",
   },
   {
     count: 3,
     title: "Leadership",
-    text: "A good lead is a clear signal, never force. Leading workshops and trainings taught me to explain a step five ways until it clicks.",
+    text: "A good lead is a clear signal. Leading workshops and trainings taught me to explain the same step in different ways until it clicks.",
   },
   {
     count: 5,
     title: "Consistency",
-    text: "Competitions are won in the hundredth rehearsal, not the first. I show up and deliver, week after week, sprint after sprint.",
+    text: "Competitions are won in the hundredth rehearsal, not the first. I bring the same steady, reliable work to every project.",
   },
   {
     count: 6,
     title: "Adaptability",
-    text: "The music changes, the floor is slippery, a partner misses a step - you recover without stopping. Same with changing requirements and production bugs.",
+    text: "The music changes, the floor is slippery, you miss a step - you recover without stopping. Same with changing requirements and production bugs.",
   },
   {
     count: 7,
@@ -66,7 +66,7 @@ export const selected = [
   {
     photo: "stage-01.jpg",
     title: "Supertalent",
-    meta: "TV, 2021",
+    meta: "TV Show, 2021",
     alt: "Faris Karkelja performing on the Supertalent stage",
   },
   {
@@ -78,7 +78,7 @@ export const selected = [
   {
     photo: "stage-03.webp",
     title: "Viennese Ball",
-    meta: "Opening ceremony, Sarajevo City Hall",
+    meta: "Opening ceremony, 2024",
     alt: "Faris Karkelja at the Viennese Ball",
   },
   {
@@ -88,7 +88,7 @@ export const selected = [
     alt: "Faris Karkelja at the national dance competition",
   },
   {
-    photo: "stage-05.JPG",
+    photo: "stage-05.jpg",
     title: "International Dance Competition",
     meta: "1st place, 2021",
     alt: "Faris Karkelja at the international dance competition",
@@ -263,7 +263,7 @@ export const performances: Performance[] = [
   {
     title: "Supertalent",
     type: "TV",
-    detail: "Nova TV, Zagreb - national talent show in Croatia",
+    detail: "Nova TV, Zagreb",
     year: "2021",
   },
   {

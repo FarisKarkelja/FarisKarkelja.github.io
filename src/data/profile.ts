@@ -14,7 +14,7 @@ export const profile = {
   roles: ["Full-Stack Developer", "Software Engineer", "Web Developer"],
   location: "Sarajevo, Bosnia and Herzegovina",
   timezone: "Europe/Sarajevo",
-  workModes: ["Remote", "Hybrid", "On-site"],
+  workModes: ["On-site", "Remote", "Hybrid"],
   site: "https://fariskarkelja.github.io",
 
   // Contact. These are the details already public on your CV.
@@ -41,22 +41,22 @@ export const profile = {
    */
   status: [
     { key: "open_to_work", value: "yes", live: true },
-    { key: "what_i_do", value: "ship web products end to end" },
-    { key: "roles", value: "full-stack / software engineer" },
-    { key: "modes", value: "remote / hybrid / on-site" },
+    { key: "what_i_do", value: "ship products end to end" },
+    { key: "roles", value: "software engineer / full-stack" },
+    { key: "modes", value: "on-site / remote / hybrid" },
     { key: "now", value: "MSc Software Engineering, IBU" },
   ] as { key: string; value: string; live?: boolean }[],
 
   // Used in SEO, social previews and the terminal (`whoami`).
   summary:
-    "Full-stack software engineer from Sarajevo. MSc Software Engineering student (BSc IT, 9.06/10 CGPA). Freelance web developer since February 2026 with four production websites live for clients in Germany and Bosnia and Herzegovina. Experience with TypeScript, React, Node.js, Python/FastAPI, Kotlin, SQL and Oracle PL/SQL, and automated testing with Playwright, pytest and JUnit.",
+    "Full-stack software engineer from Sarajevo. MSc Software Engineering student (BSc IT). Freelance web developer since February 2026 with several production websites live for clients in Germany and Bosnia and Herzegovina. Experience with TypeScript, React, Node.js, Python, SQL and Oracle PL/SQL, and automated testing.",
 
   // Bio for the About section. Each string is one paragraph.
   bio: [
-    "I'm Faris, a software engineer from Sarajevo. I finished my BSc in Information Technology at International Burch University with a 9.06/10 CGPA, and I'm now doing my MSc in Software Engineering there, focusing on software architecture and AI-driven engineering.",
-    "Since February 2026 I work as a freelance web developer. I take projects from the first client call to a live, hosted website: requirements, UI design in Figma, implementation, cross-device testing, deployment, and maintenance afterwards. Before that I interned at Union Bank (Oracle databases and PL/SQL), IDK Studio (full-stack development) and BH Telecom, and spent a semester studying in Sweden at Mälardalen University.",
+    "I'm Faris, a software engineer from Sarajevo. I completed my BSc in Information Technology at International Burch University, and I'm now doing my MSc in Software Engineering there, with a focus on software architectures and AI-driven engineering.",
+    "Since February 2026 I have been working as a freelance web developer. I take each project from the first client call to a live, hosted website, covering planning, analysis, design, implementation, cross-device testing, deployment and the maintenance that follows. Before that, I worked as an intern at Union Bank, IDK Studio and BH Telecom, and spent a semester studying in Sweden at Mälardalen University.",
     "The project I'm proudest of is TTStudy, a text-to-speech study aid I built for visually impaired students in the Western Balkans and tested with the people it was made for. My master's thesis will take it further, toward a native Bosnian text-to-speech system.",
-    "Outside of code, I am a professional dancer: on stage, on TV and in competitions since 2019. Dancing taught me what I bring to every team - rehearse until it is boring, communicate without ego, and deliver when the lights are on.",
+    "Outside of code, I am a professional dancer and have performed on stage, on television and in competitions since 2019. Dance has taught me the value of patient practice, of listening to the people I work with, and of staying calm and precise when it matters most. I bring the same to the team I join.",
   ],
 } as const;
 
@@ -95,9 +95,9 @@ export const experience: Experience[] = [
     end: "Present",
     type: "Freelance",
     points: [
-      "Deliver and host production websites for international and local clients, end to end: requirements, UI/UX design, build, deployment, maintenance.",
-      "Run cross-device testing before and after every launch, manage hosting, domains, SSL and email setup for clients.",
-      "Administer the WordPress website of ADA e.V., a scholarship association in Germany, and made it trilingual (German, English, Bosnian) with Polylang.",
+      "Deliver and host production websites for international and local clients end to end, from requirements and UI/UX design to build, deployment and maintenance.",
+      "Run cross-device testing before and after every launch, and manage hosting, domains, SSL and email setup for clients.",
+      "Administer the WordPress website of ADA e.V., a scholarship association in Germany, and set it up in three languages (German, English and Bosnian) with Polylang.",
     ],
   },
   {
@@ -108,7 +108,7 @@ export const experience: Experience[] = [
     end: "Present",
     type: "Seasonal",
     points: [
-      "Co-lead a yearly summer camp in, planning schedules and resources with other leaders and running daily workshops on teamwork, creativity and a healthy, screen-free lifestyle.",
+      "Co-lead a yearly summer camp, planning schedules and resources with other leaders and running daily workshops on teamwork, creativity and a healthy, screen-free lifestyle.",
       "Recruit, mentor and coordinate the volunteer team each season, building a safe, inclusive environment where both volunteers and campers grow.",
     ],
   },
@@ -156,7 +156,7 @@ export const experience: Experience[] = [
     end: "Jan 2025",
     type: "Part-time",
     points: [
-      "Assisted courses: Foundations of Web Development and Fundamentals of Programming",
+      "Assigned courses: Foundations of Web Development and Fundamentals of Programming",
       "Guided students through Python coding, debugging and problem solving in hands-on lab sessions.",
       "Mentored students in front-end fundamentals and supported them through end-to-end course projects.",
     ],
@@ -179,16 +179,16 @@ export const education = [
     start: "Oct 2023",
     end: "Jul 2026",
     detail:
-      "CGPA 9.06/10. Thesis: TTStudy, a text-to-speech study aid for visually impaired students.",
+      "GPA 9.06/10. Thesis: Text-to-speech study aid for visually impaired students.",
   },
   {
-    degree: "Erasmus+ Exchange Semester, Computer Science",
+    degree: "BSc Computer Science, Erasmus+ Exchange Semester",
     school: "Mälardalen University",
     place: "Västerås, Sweden",
     start: "Jan 2025",
     end: "Jun 2025",
     detail:
-      "AI algorithms (BFS/DFS, ant colony optimization, neural networks), a Docker/Linux IoT cloud monitoring system (team), probability seminar.",
+      "GPA 4.25/5.0. AI algorithms, a Docker/Linux IoT cloud monitoring system (team), probability and statistics team seminar.",
   },
   {
     degree: "High School Diploma, General Studies",
@@ -196,7 +196,7 @@ export const education = [
     place: "Sarajevo, BA",
     start: "Sep 2019",
     end: "Jun 2023",
-    detail: "",
+    detail: "School event hosting and a German language competition",
   },
 ];
 
@@ -210,54 +210,41 @@ export const toolkit: { group: string; items: Tool[] }[] = [
   {
     group: "Languages",
     items: [
+      { name: "Python", icon: "python" },
+      { name: "Java", icon: "openjdk" },
+      { name: "C++", icon: "cplusplus" },
+      { name: "SQL", icon: "sql" },
       { name: "TypeScript", icon: "typescript" },
       { name: "JavaScript", icon: "javascript" },
-      { name: "Python", icon: "python" },
-      { name: "SQL" },
-      { name: "PHP", icon: "php" },
-      { name: "Java", icon: "openjdk" },
-      { name: "Kotlin", icon: "kotlin" },
-      { name: "HTML", icon: "html5" },
-      { name: "CSS", icon: "css" },
     ],
   },
   {
     group: "Frontend",
     items: [
-      { name: "React", icon: "react" },
-      { name: "Vite", icon: "vite" },
-      { name: "Astro", icon: "astro" },
+      { name: "HTML", icon: "html5" },
+      { name: "CSS", icon: "css" },
       { name: "Bootstrap", icon: "bootstrap" },
-      { name: "Three.js", icon: "threedotjs" },
-      { name: "GSAP", icon: "gsap" },
-      { name: "Figma", icon: "figma" },
-      { name: "Responsive design" },
-      { name: "Accessibility" },
+      { name: "React", icon: "react" },
     ],
   },
   {
     group: "Backend and data",
     items: [
+      { name: "PHP", icon: "php" },
       { name: "Node.js", icon: "nodedotjs" },
-      { name: "Express", icon: "express" },
-      { name: "FastAPI", icon: "fastapi" },
-      { name: "REST APIs" },
+      { name: "REST APIs", icon: "restapi" },
       { name: "MySQL", icon: "mysql" },
-      { name: "Oracle DB" },
-      { name: "PL/SQL" },
-      { name: "Oracle APEX" },
+      { name: "PL/SQL", icon: "oracle" },
     ],
   },
   {
     group: "Testing",
     items: [
-      { name: "Playwright" },
-      { name: "pytest", icon: "pytest" },
-      { name: "Vitest", icon: "vitest" },
-      { name: "Supertest" },
       { name: "JUnit", icon: "junit5" },
       { name: "Selenium", icon: "selenium" },
       { name: "Postman", icon: "postman" },
+      { name: "Playwright", icon: "playwright" },
+      { name: "pytest", icon: "pytest" },
     ],
   },
   {
@@ -265,31 +252,36 @@ export const toolkit: { group: string; items: Tool[] }[] = [
     items: [
       { name: "Git", icon: "git" },
       { name: "GitHub", icon: "github" },
-      { name: "GitHub Actions", icon: "githubactions" },
-      { name: "Linux", icon: "linux" },
-      { name: "cPanel and web hosting", icon: "cpanel" },
-      { name: "WordPress", icon: "wordpress" },
-      { name: "Domains, DNS and SSL" },
+      { name: "Linux (Ubuntu)", icon: "ubuntu" },
+      { name: "XAMPP", icon: "xampp" },
+      { name: "Claude", icon: "claude" },
+      { name: "Visual Studio Code", icon: "visualstudiocode" },
+      { name: "Claude Code", icon: "claudecode" },
+      { name: "Figma", icon: "figma" },
     ],
   },
   {
     group: "Also worked with",
     items: [
       { name: "Jetpack Compose", icon: "jetpackcompose" },
+      { name: "Kotlin", icon: "kotlin" },
       { name: "Firebase", icon: "firebase" },
-      { name: "Next.js", icon: "nextdotjs" },
+      { name: "Firestore", icon: "firestore" },
+      { name: "SQLite", icon: "sqlite" },
+      { name: "OracleDB", icon: "oracle" },
+      { name: "Oracle APEX", icon: "oracle" },
       { name: "Docker", icon: "docker" },
       { name: "Google Cloud", icon: "googlecloud" },
-      { name: "Gemini API", icon: "googlegemini" },
-      { name: "PostgreSQL", icon: "postgresql" },
-      { name: "MongoDB", icon: "mongodb" },
-      { name: "Redis", icon: "redis" },
-      { name: "Neo4j", icon: "neo4j" },
-      { name: "SQLite", icon: "sqlite" },
-      { name: "C++", icon: "cplusplus" },
-      { name: "Claude and Claude Code", icon: "claude" },
-      { name: "Room, Hilt, Retrofit" },
-      { name: "Google Cloud Text-to-Speech" },
+      { name: "Microsoft Azure", icon: "microsoftazure" },
+      { name: "NoSQL", icon: "nosql" },
+      { name: "C", icon: "c" },
+      { name: "FastAPI", icon: "fastapi" },
+      { name: "Logisim", icon: "logisim" },
+      { name: "Shopify", icon: "shopify" },
+      { name: "WordPress", icon: "wordpress" },
+      { name: "Balsamiq", icon: "balsamiq" },
+      { name: "Latex", icon: "latex" },
+      { name: "Visual Paradigm", icon: "visual-paradigm" },
     ],
   },
 ];
@@ -309,7 +301,7 @@ export const awards: {
 }[] = [
   {
     name: "3rd Place - Computer Science and IT Student Symposium",
-    org: "BHAAAS",
+    org: "Bosnian-Herzegovinian American Academy of Arts and Sciences",
     year: "2026",
   },
   {
@@ -402,52 +394,59 @@ export type Volunteering = {
 
 export const volunteering: Volunteering[] = [
   {
-    role: 'Volunteer - Python Book Co-author',
-    org: 'International Burch University',
-    start: 'Apr 2024',
-    end: 'Jun 2024',
-    detail: 'Co-authored a Python programming book for students, designing and reviewing its functions, exercises and tutorials.',
+    role: "Volunteer - Python Book Co-author",
+    org: "International Burch University",
+    start: "Apr 2024",
+    end: "Jun 2024",
+    detail:
+      "Co-authored a Python programming book for students, designing and reviewing its functions, exercises and tutorials.",
   },
   {
-    role: 'Workshop Lead',
-    org: 'New Humanity International NGO',
-    start: 'Apr 2024',
-    end: 'May 2024',
-    detail: 'Led dance workshops in the HeARTmony project, teaching technique while building teamwork and creativity in an inclusive group.',
+    role: "Workshop Lead",
+    org: "New Humanity International NGO",
+    start: "Apr 2024",
+    end: "May 2024",
+    detail:
+      "Led dance workshops in the HeARTmony project, teaching technique while building teamwork and creativity in an inclusive group.",
   },
   {
-    role: 'Volunteer - Python Brochure',
-    org: 'International Burch University',
-    start: 'Apr 2024',
-    end: 'May 2024',
-    detail: 'Designed an educational Python brochure in a student team, turning complex concepts into clear, accessible learning material.',
+    role: "Volunteer - Python Brochure",
+    org: "International Burch University",
+    start: "Apr 2024",
+    end: "May 2024",
+    detail:
+      "Designed an educational Python brochure in a student team, turning complex concepts into clear, accessible learning material.",
   },
   {
-    role: 'Event Volunteer - Sarajevo Salsa Congress',
-    org: 'Dance Studio Aster',
-    start: 'Jan 2024',
-    end: 'Jan 2024',
-    detail: 'Coordinated logistics, merchandise and promotion for an international dance congress and supported its guest instructors.',
+    role: "Event Volunteer - Sarajevo Salsa Congress",
+    org: "Dance Studio Aster",
+    start: "Jan 2024",
+    end: "Jan 2024",
+    detail:
+      "Coordinated logistics, merchandise and promotion for an international dance congress and supported its guest instructors.",
   },
   {
-    role: 'Event Volunteer - Sarajevo Salsa Congress',
-    org: 'Dance Studio Aster',
-    start: 'Jan 2023',
-    end: 'Jan 2023',
-    detail: 'Prepared workshop venues and supported international instructors and participants to keep the congress running smoothly.',
+    role: "Event Volunteer - Sarajevo Salsa Congress",
+    org: "Dance Studio Aster",
+    start: "Jan 2023",
+    end: "Jan 2023",
+    detail:
+      "Prepared workshop venues and supported international instructors and participants to keep the congress running smoothly.",
   },
   {
-    role: 'Workshop Lead',
-    org: 'New Humanity International NGO',
-    start: 'Aug 2022',
-    end: 'Sep 2022',
-    detail: 'Led dance workshops in the HeARTmony project and supported participants at an international dance camp.',
+    role: "Workshop Lead",
+    org: "New Humanity International NGO",
+    start: "Aug 2022",
+    end: "Sep 2022",
+    detail:
+      "Led dance workshops in the HeARTmony project and supported participants at an international dance camp.",
   },
   {
-    role: 'Volunteer',
-    org: 'Meru Yoga and Health Association',
-    start: 'Jul 2020',
-    end: 'Aug 2020',
-    detail: 'Helped organize and run summer camp events, leading participants through activities and handling operational and technical tasks.',
+    role: "Volunteer",
+    org: "Meru Yoga and Health Association",
+    start: "Jul 2020",
+    end: "Aug 2020",
+    detail:
+      "Helped organize and run summer camp events, leading participants through activities and handling operational and technical tasks.",
   },
 ];

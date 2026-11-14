@@ -99,6 +99,19 @@ function row(e: Experience) {
   .timeline__points li + li {
     margin-top: 0.4rem;
   }
+  .timeline__points li {
+    position: relative;
+    padding-left: 1.2rem;
+  }
+  .timeline__points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.78em;
+    width: 0.55rem;
+    height: 1px;
+    background: var(--accent);
+  }
   .timeline__type {
     margin: 0;
     text-align: right;
