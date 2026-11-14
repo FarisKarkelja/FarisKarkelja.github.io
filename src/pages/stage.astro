@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
-import { stageIntro, programmeNote, performances, stageAwards, offStage, selected, photoCaptions } from '../data/stage';
+import { stageIntro, programmeNote, performances, stageAwards, selected, photoCaptions } from '../data/stage';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/stage/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG}', { eager: true });
 const photos = Object.entries(files)
@@ -30,29 +30,24 @@ const photos = Object.entries(files)
       <p class="stage-page__lead">{stageIntro.lead}</p>
       <p class="stage-page__programme" set:html={programmeNote} />
 
-      <div class="stage-page__cols">
-        <div>
-          <h2 class="stage-page__sub">Awards</h2>
-          <ul class="plain">
-            {
-              stageAwards.map((a) => (
-                <li data-placeholder={String(!!a.placeholder)}>
-                  {a.name}
-                  <span>
-                    {a.org}, {a.year}
-                  </span>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-        <div>
-          <h2 class="stage-page__sub">On and off stage</h2>
-          <ul class="plain">
-            {offStage.map((line) => <li>{line}</li>)}
-          </ul>
-        </div>
-      </div>
+      <h2 class="stage-page__sub" id="awards">Awards</h2>
+      <ul class="plain" data-paged data-per-page="6">
+        {
+          stageAwards.map((a) => (
+            <li>
+              {a.name}
+              <span>
+                {a.org}, {a.year}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <nav class="pager" aria-label="Award pages" data-pager hidden>
+        <button class="pager__btn pager__arrow" type="button" data-pager-prev aria-label="Previous page"><Icon name="chevron" class="pager__prev" /></button>
+        <span class="pager__nums" data-pager-nums></span>
+        <button class="pager__btn pager__arrow" type="button" data-pager-next aria-label="Next page"><Icon name="chevron" class="pager__next" /></button>
+      </nav>
 
       <h2 class="stage-page__sub" id="performances">Performances</h2>
       <ul class="credits" data-paged data-per-page="6">
@@ -92,7 +87,7 @@ const photos = Object.entries(files)
 
       <aside class="videos">
         <p class="videos__title">{stageIntro.videoNote}</p>
-        <p>My partners and I keep the recordings private, so they are not published here. I'm happy to share them in a conversation.</p>
+        <p>Most of the recordings are not published online, but I'm happy to share them on request.</p>
         <a class="btn btn--accent" href="/#contact">Ask for the videos</a>
       </aside>
     </div>
@@ -299,7 +294,8 @@ const photos = Object.entries(files)
   }
 
   /* pagination for the performances list */
-  .credits li[hidden] {
+  .credits li[hidden],
+  .plain li[hidden] {
     display: none;
   }
   .pager {
@@ -355,16 +351,19 @@ const photos = Object.entries(files)
 </style>
 
 <script>
-  // Shows the performances 6 at a time. Without JavaScript the whole list is visible.
-  const list = document.querySelector<HTMLElement>('[data-paged]');
-  const pager = document.querySelector<HTMLElement>('[data-pager]');
-  if (list && pager) {
+  // Pagination for every list marked data-paged (awards, performances). The pager sits right after the list.
+  // Without JavaScript the whole list is visible.
+  document.querySelectorAll<HTMLElement>('[data-paged]').forEach((list) => {
+    const pager = list.nextElementSibling as HTMLElement | null;
+    if (!pager || !pager.matches('[data-pager]')) return;
     const items = [...list.children] as HTMLElement[];
     const per = Number(list.dataset.perPage) || 6;
     const pages = Math.ceil(items.length / per);
+    if (pages < 2) return;
     const nums = pager.querySelector<HTMLElement>('[data-pager-nums]')!;
     const prev = pager.querySelector<HTMLButtonElement>('[data-pager-prev]')!;
     const next = pager.querySelector<HTMLButtonElement>('[data-pager-next]')!;
+    const heading = list.previousElementSibling as HTMLElement | null;
     let page = 0;
 
     const show = (p: number, scroll: boolean) => {
@@ -376,24 +375,21 @@ const photos = Object.entries(files)
       });
       prev.disabled = page === 0;
       next.disabled = page === pages - 1;
-      // keep the top of the list in view when the page changes
-      if (scroll && list.getBoundingClientRect().top < 0) document.getElementById('performances')?.scrollIntoView({ behavior: 'smooth' });
+      if (scroll && list.getBoundingClientRect().top < 0) heading?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    if (pages > 1) {
-      for (let i = 0; i < pages; i++) {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'pager__btn';
-        b.textContent = String(i + 1);
-        b.setAttribute('aria-label', `Page ${i + 1} of ${pages}`);
-        b.addEventListener('click', () => show(i, true));
-        nums.append(b);
-      }
-      prev.addEventListener('click', () => show(page - 1, true));
-      next.addEventListener('click', () => show(page + 1, true));
-      pager.hidden = false;
-      show(0, false);
+    for (let i = 0; i < pages; i++) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pager__btn';
+      b.textContent = String(i + 1);
+      b.setAttribute('aria-label', `Page ${i + 1} of ${pages}`);
+      b.addEventListener('click', () => show(i, true));
+      nums.append(b);
     }
-  }
+    prev.addEventListener('click', () => show(page - 1, true));
+    next.addEventListener('click', () => show(page + 1, true));
+    pager.hidden = false;
+    show(0, false);
+  });
 </script>

@@ -83,7 +83,8 @@ export const experience: Experience[] = [
     end: "Present",
     type: "Part-time",
     points: [
-      "Evaluate search results against detailed quality guidelines, delivering consistent and well-documented ratings.",
+      "Evaluate and verify search results, maps and local data for relevance, accuracy and user intent, following detailed quality guidelines.",
+      "Provide structured, well-documented quality feedback used to train and refine AI-driven search and recommendation systems at scale.",
     ],
   },
   {
@@ -94,19 +95,21 @@ export const experience: Experience[] = [
     end: "Present",
     type: "Freelance",
     points: [
-      "Deliver and host production websites for clients in Germany and Bosnia and Herzegovina, end to end: requirements, Figma design, build, deployment, maintenance.",
-      "Run cross-device testing before and after every launch; manage hosting, domains, SSL and email setup for clients.",
+      "Deliver and host production websites for international and local clients, end to end: requirements, UI/UX design, build, deployment, maintenance.",
+      "Run cross-device testing before and after every launch, manage hosting, domains, SSL and email setup for clients.",
       "Administer the WordPress website of ADA e.V., a scholarship association in Germany, and made it trilingual (German, English, Bosnian) with Polylang.",
     ],
-    stack: [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "Bootstrap",
-      "PHP",
-      "MySQL",
-      "WordPress",
-      "Figma",
+  },
+  {
+    role: "Coordinator of Volunteers",
+    org: "Meru Yoga and Health Association",
+    place: "Trpanj, Croatia",
+    start: "Jul 2021",
+    end: "Present",
+    type: "Seasonal",
+    points: [
+      "Co-lead a yearly summer camp in, planning schedules and resources with other leaders and running daily workshops on teamwork, creativity and a healthy, screen-free lifestyle.",
+      "Recruit, mentor and coordinate the volunteer team each season, building a safe, inclusive environment where both volunteers and campers grow.",
     ],
   },
   {
@@ -117,7 +120,8 @@ export const experience: Experience[] = [
     end: "Feb 2026",
     type: "Internship",
     points: [
-      "Rotated through app development, QA and server operations teams, plus SMS/MMS, voice and packet core departments in a live telecom network.",
+      "Rotated through app development, QA testing and server operations teams, observing how software is built, tested and run in a large telecom.",
+      "Studied SMS/MMS, voice and packet core systems in a live national telecom network, from service flows to the infrastructure behind them.",
     ],
   },
   {
@@ -128,10 +132,9 @@ export const experience: Experience[] = [
     end: "Oct 2025",
     type: "Internship",
     points: [
-      "Optimized SQL queries and database processes supporting internal banking applications.",
-      "Built an Oracle APEX application with the team for tracking the import, export and consumption of consumable materials.",
+      "Wrote and optimized SQL and PL/SQL queries and database procedures on Oracle Database for faster, more reliable processing.",
+      "Co-developed an internal Oracle APEX application that tracks the import, export and consumption of the bank's consumable materials.",
     ],
-    stack: ["Oracle DB", "SQL", "PL/SQL", "Oracle APEX"],
   },
   {
     role: "Full Stack Developer Intern",
@@ -141,9 +144,9 @@ export const experience: Experience[] = [
     end: "Oct 2025",
     type: "Internship",
     points: [
-      'Designed in Figma and developed "Unwind", a full-stack movie library app with trailers and personalized watchlists.',
+      'Designed in Figma and built "Unwind", a full-stack movie library app with trending titles and integrated trailers (JavaScript, PHP, MySQL).',
+      "Implemented personalized Watched and Watchlist collections with search and one-click add or remove, in a responsive, intuitive UI.",
     ],
-    stack: ["Figma", "Full-stack web"],
   },
   {
     role: "Laboratory Demonstrator",
@@ -153,48 +156,21 @@ export const experience: Experience[] = [
     end: "Jan 2025",
     type: "Part-time",
     points: [
-      "Courses: Fundamentals of Programming, Foundations of Web Development.",
-      "Co-led lab sessions with the head teaching assistant and helped students debug their code and build their projects.",
+      "Assisted courses: Foundations of Web Development and Fundamentals of Programming",
+      "Guided students through Python coding, debugging and problem solving in hands-on lab sessions.",
+      "Mentored students in front-end fundamentals and supported them through end-to-end course projects.",
     ],
-  },
-
-  // ---- behind "Show more experience" ----
-  {
-    role: "Professional Dancer",
-    org: "Dance Studio Aster",
-    place: "Sarajevo, BA",
-    start: "2019",
-    end: "Present",
-    type: "Stage",
-    points: [
-      "Partner and formation dancing on TV, at brand events and in competitions; first place at national and international level.",
-      "Lead workshops and trainings for other dancers.",
-    ],
-    more: true,
-  },
-  {
-    role: "Coordinator of Volunteers",
-    org: "Meru Yoga and Health Association",
-    place: "Sarajevo, BA",
-    start: "2021",
-    end: "Present",
-    type: "Volunteer",
-    points: [
-      "Coordinate the volunteer team and co-lead a yearly summer camp in Trpanj, Croatia.",
-    ],
-    more: true,
   },
 ];
 
 export const education = [
   {
-    degree: "MSc Software Engineering",
+    degree: "MSc Information Technology",
     school: "International Burch University",
     place: "Sarajevo, BA",
     start: "Oct 2026",
     end: "Present",
-    detail:
-      "Courses: Software Architectures, AI-Driven Software Engineering, Generative AI with LLMs, Scientific Research Methods.",
+    detail: "Track: Software Engineering.",
   },
   {
     degree: "BSc Information Technology",
@@ -321,7 +297,7 @@ export const toolkit: { group: string; items: Tool[] }[] = [
 export const languages = [
   { name: "Bosnian / Croatian / Serbian", level: "Native" },
   { name: "English", level: "Fluent" },
-  { name: "German", level: "Upper-intermediate (TestDaF)" },
+  { name: "German", level: "Upper-intermediate" },
   { name: "Swedish", level: "Beginner" },
 ];
 
@@ -332,7 +308,7 @@ export const awards: {
   placeholder?: boolean;
 }[] = [
   {
-    name: "3rd Place, Computer Science and IT Student Symposium",
+    name: "3rd Place - Computer Science and IT Student Symposium",
     org: "BHAAAS",
     year: "2026",
   },
@@ -342,7 +318,7 @@ export const awards: {
     year: "2024",
   },
   {
-    name: "1st Place, National Dance Competition",
+    name: "1st Place - National Dance Competition",
     org: "Modern Dance Association of BiH",
     year: "2021-2023, 2025",
   },
@@ -380,17 +356,35 @@ export const certificates: Certificate[] = [
     detail: "Building on the Claude API: prompting, tool use and model choice.",
   },
   {
-    name: "TestDaF - German as a Foreign Language",
+    name: "TestDaF - German as a Foreign Language, B2",
     org: "TestDaF-Institut",
-    year: "20XX",
+    year: "2024",
     detail: "Reading TDN 3, Listening TDN 4, Writing TDN 3, Speaking TDN 4.",
-    placeholder: true, // fill in the year
   },
   {
-    name: "Web Programming and C++ Intermediate",
-    org: "Logosoft and the Association of Mathematicians of Sarajevo Canton",
+    name: "Web Programming",
+    org: "Association of Mathematicians of Sarajevo Canton and Logosoft",
     year: "2019",
-    detail: "Intermediate C++ and the basics of web programming.",
+    detail: "Building websites with HTML, CSS and JavaScript.",
+  },
+  {
+    name: "C++ Intermediate",
+    org: "Association of Mathematicians of Sarajevo Canton and Logosoft",
+    year: "2018",
+    detail:
+      "Intermediate C++: functions, arrays, structures and problem solving.",
+  },
+  {
+    name: "English Language Course, B1.1",
+    org: "Altera Lingua - Follow Me, Sarajevo",
+    year: "2018",
+    detail: "Completed an English language course at level B1.1.",
+  },
+  {
+    name: "Introduction to C++",
+    org: "Association of Mathematicians of Sarajevo Canton and Logosoft",
+    year: "2018",
+    detail: "Programming fundamentals in C++.",
   },
 ];
 
@@ -408,20 +402,52 @@ export type Volunteering = {
 
 export const volunteering: Volunteering[] = [
   {
-    role: "Volunteer",
-    org: "European Heritage Days",
-    start: "2024",
-    end: "2024",
-    detail:
-      "Recognized with a plaque for outstanding contribution by the Federal Ministry of Culture and Sports.",
-    placeholder: true, // confirm the role and add one line about what you did
+    role: 'Volunteer - Python Book Co-author',
+    org: 'International Burch University',
+    start: 'Apr 2024',
+    end: 'Jun 2024',
+    detail: 'Co-authored a Python programming book for students, designing and reviewing its functions, exercises and tutorials.',
   },
   {
-    role: "Role title",
-    org: "Organisation",
-    start: "20XX",
-    end: "20XX",
-    detail: "Add another volunteering role here, or delete this entry.",
-    placeholder: true,
+    role: 'Workshop Lead',
+    org: 'New Humanity International NGO',
+    start: 'Apr 2024',
+    end: 'May 2024',
+    detail: 'Led dance workshops in the HeARTmony project, teaching technique while building teamwork and creativity in an inclusive group.',
+  },
+  {
+    role: 'Volunteer - Python Brochure',
+    org: 'International Burch University',
+    start: 'Apr 2024',
+    end: 'May 2024',
+    detail: 'Designed an educational Python brochure in a student team, turning complex concepts into clear, accessible learning material.',
+  },
+  {
+    role: 'Event Volunteer - Sarajevo Salsa Congress',
+    org: 'Dance Studio Aster',
+    start: 'Jan 2024',
+    end: 'Jan 2024',
+    detail: 'Coordinated logistics, merchandise and promotion for an international dance congress and supported its guest instructors.',
+  },
+  {
+    role: 'Event Volunteer - Sarajevo Salsa Congress',
+    org: 'Dance Studio Aster',
+    start: 'Jan 2023',
+    end: 'Jan 2023',
+    detail: 'Prepared workshop venues and supported international instructors and participants to keep the congress running smoothly.',
+  },
+  {
+    role: 'Workshop Lead',
+    org: 'New Humanity International NGO',
+    start: 'Aug 2022',
+    end: 'Sep 2022',
+    detail: 'Led dance workshops in the HeARTmony project and supported participants at an international dance camp.',
+  },
+  {
+    role: 'Volunteer',
+    org: 'Meru Yoga and Health Association',
+    start: 'Jul 2020',
+    end: 'Aug 2020',
+    detail: 'Helped organize and run summer camp events, leading participants through activities and handling operational and technical tasks.',
   },
 ];

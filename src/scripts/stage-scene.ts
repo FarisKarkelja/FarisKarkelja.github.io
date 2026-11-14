@@ -34,9 +34,9 @@ import {
   Vector2,
   Vector3,
   WebGLRenderer,
-} from 'three';
-import { Reflector } from 'three/addons/objects/Reflector.js';
-import { token } from './theme';
+} from "three";
+import { Reflector } from "three/addons/objects/Reflector.js";
+import { token } from "./theme";
 
 const { lerp, clamp } = MathUtils;
 const UP = new Vector3(0, 1, 0);
@@ -119,7 +119,15 @@ function ball(r: number, mat: MeshStandardMaterial) {
 }
 
 /** Two-bone inverse kinematics. Writes the middle joint and the reachable end point. */
-function ik(root: Vector3, target: Vector3, l1: number, l2: number, pole: Vector3, mid: Vector3, end: Vector3) {
+function ik(
+  root: Vector3,
+  target: Vector3,
+  l1: number,
+  l2: number,
+  pole: Vector3,
+  mid: Vector3,
+  end: Vector3,
+) {
   tmpA.subVectors(target, root);
   const d = clamp(tmpA.length(), Math.abs(l1 - l2) + 0.01, (l1 + l2) * 0.998);
   tmpA.normalize();
@@ -171,7 +179,12 @@ class Dancer {
   private head: Mesh;
   private hair: Mesh;
   private parts: Record<string, Mesh> = {};
-  private skirt?: { mesh: Mesh; pos: Float32Array; rings: number; segs: number };
+  private skirt?: {
+    mesh: Mesh;
+    pos: Float32Array;
+    rings: number;
+    segs: number;
+  };
   private tail: Mesh[] = [];
   private tailTip = v3();
   private lastYaw = 0;
@@ -214,10 +227,10 @@ class Dancer {
       const c = female && y > 0.87 ? look.skin.color : cTop;
       colors.set([c.r, c.g, c.b], i * 3);
     }
-    lathe.setAttribute('color', new BufferAttribute(colors, 3));
+    lathe.setAttribute("color", new BufferAttribute(colors, 3));
     const torsoMat = (look.dress ?? look.top).clone();
     torsoMat.vertexColors = true;
-    torsoMat.color.set('#ffffff');
+    torsoMat.color.set("#ffffff");
     this.torso = new Mesh(lathe, torsoMat);
     this.torso.castShadow = true;
 
@@ -230,20 +243,42 @@ class Dancer {
     this.hair.scale.set(0.95, 1.08, 1);
 
     const add = (name: string, mesh: Mesh) => (this.parts[name] = mesh);
-    for (const s of ['L', 'R']) {
-      add('sh' + s, ball(female ? 0.047 : 0.062, female ? look.skin : look.sleeve));
-      add('up' + s, limb(female ? 0.043 : 0.055, female ? 0.036 : 0.045, look.sleeve));
-      add('el' + s, ball(female ? 0.036 : 0.045, look.sleeve));
-      add('fo' + s, limb(female ? 0.035 : 0.044, female ? 0.026 : 0.034, look.sleeve));
-      add('ha' + s, ball(female ? 0.034 : 0.042, look.skin));
-      add('th' + s, limb(female ? 0.074 : 0.082, female ? 0.05 : 0.058, look.leg));
-      add('kn' + s, ball(female ? 0.05 : 0.058, look.leg));
-      add('shn' + s, limb(female ? 0.049 : 0.057, female ? 0.03 : 0.04, look.leg));
+    for (const s of ["L", "R"]) {
+      add(
+        "sh" + s,
+        ball(female ? 0.047 : 0.062, female ? look.skin : look.sleeve),
+      );
+      add(
+        "up" + s,
+        limb(female ? 0.043 : 0.055, female ? 0.036 : 0.045, look.sleeve),
+      );
+      add("el" + s, ball(female ? 0.036 : 0.045, look.sleeve));
+      add(
+        "fo" + s,
+        limb(female ? 0.035 : 0.044, female ? 0.026 : 0.034, look.sleeve),
+      );
+      add("ha" + s, ball(female ? 0.034 : 0.042, look.skin));
+      add(
+        "th" + s,
+        limb(female ? 0.074 : 0.082, female ? 0.05 : 0.058, look.leg),
+      );
+      add("kn" + s, ball(female ? 0.05 : 0.058, look.leg));
+      add(
+        "shn" + s,
+        limb(female ? 0.049 : 0.057, female ? 0.03 : 0.04, look.leg),
+      );
       const foot = ball(1, look.shoe);
-      add('ft' + s, foot);
+      add("ft" + s, foot);
     }
 
-    this.group.add(this.torso, this.hips, this.neck, this.head, this.hair, ...Object.values(this.parts));
+    this.group.add(
+      this.torso,
+      this.hips,
+      this.neck,
+      this.head,
+      this.hair,
+      ...Object.values(this.parts),
+    );
 
     if (female && look.dress) {
       const rings = 8;
@@ -257,7 +292,7 @@ class Dancer {
           idx.push(a, b, a + 1, b, b + 1, a + 1);
         }
       const g = new BufferGeometry();
-      g.setAttribute('position', new BufferAttribute(pos, 3));
+      g.setAttribute("position", new BufferAttribute(pos, 3));
       g.setIndex(idx);
       const mat = look.dress.clone();
       mat.side = DoubleSide;
@@ -283,15 +318,33 @@ class Dancer {
     const sy = Math.sin(p.yaw);
     this.fwd.set(sy, 0, cy);
     this.left.set(cy, 0, -sy);
-    this.spine.copy(UP).addScaledVector(this.fwd, Math.tan(p.lean)).addScaledVector(this.left, Math.tan(p.side)).normalize();
+    this.spine
+      .copy(UP)
+      .addScaledVector(this.fwd, Math.tan(p.lean))
+      .addScaledVector(this.left, Math.tan(p.side))
+      .normalize();
     this.chest.copy(p.pelvis).addScaledVector(this.spine, this.d.torso);
     const ty = p.yaw + p.twist;
     this.leftC.set(Math.cos(ty), 0, -Math.sin(ty));
-    this.shL.copy(this.chest).addScaledVector(this.leftC, this.d.shoulder).addScaledVector(this.spine, -0.05);
-    this.shR.copy(this.chest).addScaledVector(this.leftC, -this.d.shoulder).addScaledVector(this.spine, -0.05);
-    this.hipL.copy(p.pelvis).addScaledVector(this.left, this.d.hipHalf).addScaledVector(UP, -0.03);
-    this.hipR.copy(p.pelvis).addScaledVector(this.left, -this.d.hipHalf).addScaledVector(UP, -0.03);
-    this.headC.copy(this.chest).addScaledVector(this.spine, this.d.neck + this.d.head * 0.95);
+    this.shL
+      .copy(this.chest)
+      .addScaledVector(this.leftC, this.d.shoulder)
+      .addScaledVector(this.spine, -0.05);
+    this.shR
+      .copy(this.chest)
+      .addScaledVector(this.leftC, -this.d.shoulder)
+      .addScaledVector(this.spine, -0.05);
+    this.hipL
+      .copy(p.pelvis)
+      .addScaledVector(this.left, this.d.hipHalf)
+      .addScaledVector(UP, -0.03);
+    this.hipR
+      .copy(p.pelvis)
+      .addScaledVector(this.left, -this.d.hipHalf)
+      .addScaledVector(UP, -0.03);
+    this.headC
+      .copy(this.chest)
+      .addScaledVector(this.spine, this.d.neck + this.d.head * 0.95);
   }
 
   /** Step 2: solve arms and legs for the hand and foot targets, then move every mesh. */
@@ -300,14 +353,28 @@ class Dancer {
     const d = this.d;
 
     // arms: elbows fall down and slightly back/out
-    tmpC.copy(UP).multiplyScalar(-1).addScaledVector(this.fwd, -0.55).addScaledVector(this.leftC, 0.45);
+    tmpC
+      .copy(UP)
+      .multiplyScalar(-1)
+      .addScaledVector(this.fwd, -0.55)
+      .addScaledVector(this.leftC, 0.45);
     ik(this.shL, p.handL, d.upper, d.fore, tmpC, this.elL, this.wrL);
-    tmpC.copy(UP).multiplyScalar(-1).addScaledVector(this.fwd, -0.55).addScaledVector(this.leftC, -0.45);
+    tmpC
+      .copy(UP)
+      .multiplyScalar(-1)
+      .addScaledVector(this.fwd, -0.55)
+      .addScaledVector(this.leftC, -0.45);
     ik(this.shR, p.handR, d.upper, d.fore, tmpC, this.elR, this.wrR);
     // legs: knees go forward and a little outward
-    tmpC.copy(this.fwd).addScaledVector(this.left, 0.3).addScaledVector(UP, 0.2);
+    tmpC
+      .copy(this.fwd)
+      .addScaledVector(this.left, 0.3)
+      .addScaledVector(UP, 0.2);
     ik(this.hipL, p.footL, d.thigh, d.shin, tmpC, this.knL, this.anL);
-    tmpC.copy(this.fwd).addScaledVector(this.left, -0.3).addScaledVector(UP, 0.2);
+    tmpC
+      .copy(this.fwd)
+      .addScaledVector(this.left, -0.3)
+      .addScaledVector(UP, 0.2);
     ik(this.hipR, p.footR, d.thigh, d.shin, tmpC, this.knR, this.anR);
 
     // torso
@@ -316,7 +383,11 @@ class Dancer {
     basis.makeBasis(tmpB, this.spine, tmpA);
     this.torso.quaternion.setFromRotationMatrix(basis);
     this.torso.position.copy(p.pelvis).addScaledVector(this.spine, -0.07);
-    this.torso.scale.set(this.female ? 1.18 : 1.22, d.torso + 0.07, this.female ? 0.74 : 0.72);
+    this.torso.scale.set(
+      this.female ? 1.18 : 1.22,
+      d.torso + 0.07,
+      this.female ? 0.74 : 0.72,
+    );
     this.hips.position.copy(p.pelvis).addScaledVector(UP, -0.02);
     this.hips.quaternion.setFromAxisAngle(UP, p.yaw);
     this.hips.scale.set(d.hipHalf * 1.62, 0.105, 0.108);
@@ -328,27 +399,56 @@ class Dancer {
     this.head.position.copy(this.headC);
     this.head.quaternion.setFromRotationMatrix(basis);
     this.head.rotateY(p.headTurn);
-    this.hair.position.copy(this.headC).addScaledVector(this.spine, d.head * 0.14);
+    this.hair.position
+      .copy(this.headC)
+      .addScaledVector(this.spine, d.head * 0.14);
     tmpA.set(0, 0, -1).applyQuaternion(this.head.quaternion); // back of the head
     this.hair.position.addScaledVector(tmpA, d.head * 0.2);
     this.hair.quaternion.copy(this.head.quaternion);
 
     const P = this.parts;
-    const sides: [string, Vector3, Vector3, Vector3, Vector3, Vector3, Vector3, number][] = [
-      ['L', this.shL, this.elL, this.wrL, this.hipL, this.knL, this.anL, p.pointL],
-      ['R', this.shR, this.elR, this.wrR, this.hipR, this.knR, this.anR, p.pointR],
+    const sides: [
+      string,
+      Vector3,
+      Vector3,
+      Vector3,
+      Vector3,
+      Vector3,
+      Vector3,
+      number,
+    ][] = [
+      [
+        "L",
+        this.shL,
+        this.elL,
+        this.wrL,
+        this.hipL,
+        this.knL,
+        this.anL,
+        p.pointL,
+      ],
+      [
+        "R",
+        this.shR,
+        this.elR,
+        this.wrR,
+        this.hipR,
+        this.knR,
+        this.anR,
+        p.pointR,
+      ],
     ];
     for (const [s, sh, el, wr, hip, kn, an, point] of sides) {
-      P['sh' + s].position.copy(sh);
-      place(P['up' + s], sh, el);
-      P['el' + s].position.copy(el);
-      place(P['fo' + s], el, wr);
-      P['ha' + s].position.copy(wr);
-      place(P['th' + s], hip, kn);
-      P['kn' + s].position.copy(kn);
-      place(P['shn' + s], kn, an);
+      P["sh" + s].position.copy(sh);
+      place(P["up" + s], sh, el);
+      P["el" + s].position.copy(el);
+      place(P["fo" + s], el, wr);
+      P["ha" + s].position.copy(wr);
+      place(P["th" + s], hip, kn);
+      P["kn" + s].position.copy(kn);
+      place(P["shn" + s], kn, an);
       // foot: flat on the floor facing forward, or pointed along the shin
-      const foot = P['ft' + s];
+      const foot = P["ft" + s];
       tmpA.subVectors(an, kn).normalize();
       tmpB.copy(this.fwd).lerp(tmpA, point).normalize();
       tmpC.crossVectors(UP, tmpB);
@@ -357,8 +457,15 @@ class Dancer {
       tmpA.crossVectors(tmpB, tmpC).normalize();
       basis.makeBasis(tmpC, tmpA, tmpB);
       foot.quaternion.setFromRotationMatrix(basis);
-      foot.position.copy(an).addScaledVector(tmpB, this.female ? 0.07 : 0.08).addScaledVector(tmpA, -0.03 * (1 - point));
-      foot.scale.set(this.female ? 0.036 : 0.047, this.female ? 0.03 : 0.036, this.female ? 0.105 : 0.128);
+      foot.position
+        .copy(an)
+        .addScaledVector(tmpB, this.female ? 0.07 : 0.08)
+        .addScaledVector(tmpA, -0.03 * (1 - point));
+      foot.scale.set(
+        this.female ? 0.036 : 0.047,
+        this.female ? 0.03 : 0.036,
+        this.female ? 0.105 : 0.128,
+      );
     }
 
     // how fast she is turning drives the skirt and the ponytail
@@ -374,13 +481,15 @@ class Dancer {
   private updateSkirt(time: number) {
     const { pos, rings, segs, mesh } = this.skirt!;
     const p = this.pose;
-    const flare = clamp(Math.abs(this.omega) / 7, 0, 1);
     // when she is low on the floor the dress stays long and pools, so it always covers her legs
     const low = 1 - smooth(0.5, 0.8, p.pelvis.y);
+    // the dress flares with the spin, and stays spread out on the floor while she is down
+    const flare = Math.max(clamp(Math.abs(this.omega) / 7, 0, 1), low * 0.85);
     const len = 0.46 + 0.06 * low;
     // down on the floor the legs are fully under the dress, so they are not drawn (no poking through)
     const hideLegs = low > 0.55;
-    for (const n of ['th', 'kn', 'shn', 'ft']) for (const sd of ['L', 'R']) this.parts[n + sd].visible = !hideLegs;
+    for (const n of ["th", "kn", "shn", "ft"])
+      for (const sd of ["L", "R"]) this.parts[n + sd].visible = !hideLegs;
     const lag = clamp(this.omega * 0.085, -1.3, 1.3);
     const waist = tmpA.copy(p.pelvis).addScaledVector(this.spine, 0.1);
     let k = 0;
@@ -391,7 +500,10 @@ class Dancer {
       for (let s = 0; s <= segs; s++) {
         const a = (s / segs) * Math.PI * 2;
         const ang = a + p.yaw - lag * t;
-        const ruffle = 1 + 0.085 * t * Math.sin(a * 7 + t * 3 + time * 2.2) + 0.04 * t * Math.sin(a * 3 - time * 1.4);
+        const ruffle =
+          1 +
+          0.085 * t * Math.sin(a * 7 + t * 3 + time * 2.2) +
+          0.04 * t * Math.sin(a * 3 - time * 1.4);
         let r = rBase * ruffle;
         let y = waist.y - drop;
         // drape over the knees instead of letting them poke through the fabric
@@ -402,7 +514,10 @@ class Dancer {
           if (reach <= r) continue;
           let da = ang - Math.atan2(kx, kz);
           da = Math.abs(Math.atan2(Math.sin(da), Math.cos(da)));
-          const wgt = (1 - smooth(0.3, 0.95, da)) * (1 - smooth(0.02, 0.2, Math.abs(y - kn.y))) * (1 - low);
+          const wgt =
+            (1 - smooth(0.3, 0.95, da)) *
+            (1 - smooth(0.02, 0.2, Math.abs(y - kn.y))) *
+            (1 - low);
           r += (reach - r) * wgt;
         }
         const floor = 0.018 + 0.01 * Math.sin(a * 5);
@@ -423,11 +538,18 @@ class Dancer {
 
   private updateTail(dt: number) {
     const d = this.d;
-    const root = tmpA.set(0, 0.35, -1).applyQuaternion(this.head.quaternion).multiplyScalar(d.head * 1.05).add(this.headC);
+    const root = tmpA
+      .set(0, 0.35, -1)
+      .applyQuaternion(this.head.quaternion)
+      .multiplyScalar(d.head * 1.05)
+      .add(this.headC);
     // rest: hangs down the back; spinning throws it outward
     const out = tmpB.set(0, 0, -1).applyQuaternion(this.head.quaternion);
     const swing = clamp(Math.abs(this.omega) / 8, 0, 1);
-    const target = tmpC.copy(root).addScaledVector(UP, -0.3 * (1 - swing * 0.75)).addScaledVector(out, 0.1 + 0.3 * swing);
+    const target = tmpC
+      .copy(root)
+      .addScaledVector(UP, -0.3 * (1 - swing * 0.75))
+      .addScaledVector(out, 0.1 + 0.3 * swing);
     // the tip trails behind the direction of the turn
     target.addScaledVector(this.left, -Math.sign(this.omega) * 0.14 * swing);
     if (dt <= 0 || this.tailTip.lengthSq() === 0) this.tailTip.copy(target);
@@ -442,8 +564,32 @@ class Dancer {
 
 /* ------------------------------------------------------------------ choreography */
 
-const M: Dims = { hip: 1.0, thigh: 0.46, shin: 0.46, torso: 0.5, neck: 0.075, head: 0.105, shoulder: 0.205, hipHalf: 0.095, upper: 0.3, fore: 0.27, ankle: 0.075 };
-const W: Dims = { hip: 0.965, thigh: 0.44, shin: 0.43, torso: 0.45, neck: 0.07, head: 0.097, shoulder: 0.165, hipHalf: 0.09, upper: 0.27, fore: 0.25, ankle: 0.09 };
+const M: Dims = {
+  hip: 1.0,
+  thigh: 0.46,
+  shin: 0.46,
+  torso: 0.5,
+  neck: 0.075,
+  head: 0.105,
+  shoulder: 0.205,
+  hipHalf: 0.095,
+  upper: 0.3,
+  fore: 0.27,
+  ankle: 0.075,
+};
+const W: Dims = {
+  hip: 0.965,
+  thigh: 0.44,
+  shin: 0.43,
+  torso: 0.45,
+  neck: 0.07,
+  head: 0.097,
+  shoulder: 0.165,
+  hipHalf: 0.09,
+  upper: 0.27,
+  fore: 0.25,
+  ankle: 0.09,
+};
 
 const PIVOT = v3(0.1, 0, 0.14); // where she spins
 const M_SPIN = v3(-0.42, 0, -0.26); // where he stands while he turns her (he walks round behind her)
@@ -455,14 +601,32 @@ const YAW_W_FINAL = 0.42;
 const t1 = v3();
 const t2 = v3();
 const t3 = v3();
-const rot = (out: Vector3, x: number, y: number, z: number, yaw: number, origin: Vector3) => {
+const rot = (
+  out: Vector3,
+  x: number,
+  y: number,
+  z: number,
+  yaw: number,
+  origin: Vector3,
+) => {
   const c = Math.cos(yaw);
   const s = Math.sin(yaw);
-  return out.set(origin.x + x * c + z * s, origin.y + y, origin.z - x * s + z * c);
+  return out.set(
+    origin.x + x * c + z * s,
+    origin.y + y,
+    origin.z - x * s + z * c,
+  );
 };
 const arc = (x: number) => Math.sin(Math.PI * clamp(x, 0, 1));
 
-function choreo(u: number, time: number, spinTime: number, man: Dancer, woman: Dancer, still: boolean) {
+function choreo(
+  u: number,
+  time: number,
+  spinTime: number,
+  man: Dancer,
+  woman: Dancer,
+  still: boolean,
+) {
   const m = man.pose;
   const w = woman.pose;
 
@@ -476,7 +640,11 @@ function choreo(u: number, time: number, spinTime: number, man: Dancer, woman: D
   const fin = smooth(7.0, 7.75, u); // the final picture
   const gate = smooth(4.3, 4.9, u);
   const breath = still ? 0 : Math.sin(time * 1.7);
-  const beat = still ? 0 : Math.sin(time * 5.2) * (1 - down) * (1 - smooth(3, 3.3, u) * (1 - smooth(3.8, 4, u)));
+  const beat = still
+    ? 0
+    : Math.sin(time * 5.2) *
+      (1 - down) *
+      (1 - smooth(3, 3.3, u) * (1 - smooth(3.8, 4, u)));
 
   // ---- basic step (counts 1-3): he steps forward on his left, she steps back on her right
   const travel = -(0.13 * c1 - 0.11 * c2 - 0.02 * c3); // the couple travels towards stage left and back
@@ -487,7 +655,11 @@ function choreo(u: number, time: number, spinTime: number, man: Dancer, woman: D
   // ---- the lead
   const mYaw = lerp(YAW_M, YAW_M_SPIN, move);
   m.yaw = mYaw;
-  m.pelvis.set(lerp(0.27 + travel, M_SPIN.x, move), M.hip - 0.015 - 0.035 * down + 0.02 * fin + beat * 0.006, lerp(0, M_SPIN.z, move) - 0.38 * arc(move));
+  m.pelvis.set(
+    lerp(0.27 + travel, M_SPIN.x, move),
+    M.hip - 0.015 - 0.035 * down + 0.02 * fin + beat * 0.006,
+    lerp(0, M_SPIN.z, move) - 0.38 * arc(move),
+  );
   m.lean = 0.03 + 0.2 * down - 0.1 * fin + breath * 0.006;
   m.side = sway - 0.05 * down;
   m.twist = 0.12 * down - 0.1 * fin;
@@ -511,12 +683,18 @@ function choreo(u: number, time: number, spinTime: number, man: Dancer, woman: D
   // ---- the follow
   // turning: two full turns driven by the scroll, plus a continuous spin while you stay on counts 5-7
   let wYaw = YAW_W + smooth(4.3, 7.15, u) * Math.PI * 4 + spinTime * gate;
-  const settle = YAW_W_FINAL + Math.PI * 2 * Math.round((wYaw - YAW_W_FINAL) / (Math.PI * 2));
+  const settle =
+    YAW_W_FINAL +
+    Math.PI * 2 * Math.round((wYaw - YAW_W_FINAL) / (Math.PI * 2));
   wYaw = lerp(wYaw, settle, fin);
   w.yaw = wYaw;
   const lowH = 0.4;
   rot(t1, 0, 0, -0.07, wYaw, PIVOT); // low: she sits back over her supporting heel
-  w.pelvis.set(lerp(-0.27 + travel, t1.x, move), lerp(W.hip - 0.015 + beat * 0.006, lowH + breath * 0.004, down), lerp(0, t1.z, move) + 0.1 * arc(move));
+  w.pelvis.set(
+    lerp(-0.27 + travel, t1.x, move),
+    lerp(W.hip - 0.015 + beat * 0.006, lowH + breath * 0.004, down),
+    lerp(0, t1.z, move) + 0.1 * arc(move),
+  );
   w.lean = lerp(0.02, 0.3, down) - 0.06 * fin + breath * 0.006;
   w.side = lerp(-sway, -0.12, down);
   w.twist = 0.1 * down + 0.18 * fin;
@@ -597,17 +775,26 @@ const coneFragment = /* glsl */ `
 export type StageScene = { setCount: (u: number) => void; destroy: () => void };
 
 export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const small = window.matchMedia('(max-width: 900px)').matches;
-  const lowPower = ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 2;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const small = window.matchMedia("(max-width: 900px)").matches;
+  const lowPower =
+    ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <=
+    2;
 
   let renderer: WebGLRenderer;
   try {
-    renderer = new WebGLRenderer({ canvas, antialias: !small, alpha: true, powerPreference: 'high-performance' });
+    renderer = new WebGLRenderer({
+      canvas,
+      antialias: !small,
+      alpha: true,
+      powerPreference: "high-performance",
+    });
   } catch {
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 1.75));
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, small ? 1.5 : 1.75),
+  );
   renderer.setClearColor(0x000000, 0);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFShadowMap;
@@ -618,25 +805,60 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
   const camera = new PerspectiveCamera(30, 1, 0.1, 60);
 
   // ---- materials
-  const std = (color: string, roughness: number, metalness = 0) => new MeshStandardMaterial({ color, roughness, metalness });
-  const skin = std('#d9bfa6', 0.62);
-  const black = std('#17171c', 0.42, 0.15);
-  const lime = std('#9fe01f', 0.48);
-  lime.emissive = new Color('#7fcf00');
+  const std = (color: string, roughness: number, metalness = 0) =>
+    new MeshStandardMaterial({ color, roughness, metalness });
+  const skin = std("#d9bfa6", 0.62);
+  const black = std("#17171c", 0.42, 0.15);
+  const lime = std("#9fe01f", 0.48);
+  lime.emissive = new Color("#7fcf00");
   lime.emissiveIntensity = 0.28;
-  const man = new Dancer(M, { skin, top: black, sleeve: black, leg: black, shoe: std('#08080a', 0.18, 0.3), hair: std('#1b1512', 0.7) }, false);
-  const woman = new Dancer(W, { skin, top: lime, sleeve: skin, leg: skin, shoe: std('#d8b36a', 0.3, 0.5), hair: std('#6b4329', 0.55), dress: lime }, true);
+  const man = new Dancer(
+    M,
+    {
+      skin,
+      top: black,
+      sleeve: black,
+      leg: black,
+      shoe: std("#08080a", 0.18, 0.3),
+      hair: std("#1b1512", 0.7),
+    },
+    false,
+  );
+  const woman = new Dancer(
+    W,
+    {
+      skin,
+      top: lime,
+      sleeve: skin,
+      leg: skin,
+      shoe: std("#d8b36a", 0.3, 0.5),
+      hair: std("#6b4329", 0.55),
+      dress: lime,
+    },
+    true,
+  );
   scene.add(man.group, woman.group);
 
   // ---- floor: a mirror under a dark, slightly see-through stage surface
-  const floorColor = new Color(token('--bg-deep') || '#0c080a');
+  const floorColor = new Color(token("--bg-deep") || "#0c080a");
   let mirror: Reflector | null = null;
   if (!small && !lowPower) {
-    mirror = new Reflector(new CircleGeometry(9, 48), { clipBias: 0.003, textureWidth: 1024, textureHeight: 1024, color: 0x8a8a8a });
+    mirror = new Reflector(new CircleGeometry(9, 48), {
+      clipBias: 0.003,
+      textureWidth: 1024,
+      textureHeight: 1024,
+      color: 0x8a8a8a,
+    });
     mirror.rotation.x = -Math.PI / 2;
     scene.add(mirror);
   }
-  const floorMat = new MeshStandardMaterial({ color: floorColor.clone().multiplyScalar(1.6), roughness: 0.55, metalness: 0.1, transparent: !!mirror, opacity: mirror ? 0.87 : 1 });
+  const floorMat = new MeshStandardMaterial({
+    color: floorColor.clone().multiplyScalar(1.6),
+    roughness: 0.55,
+    metalness: 0.1,
+    transparent: !!mirror,
+    opacity: mirror ? 0.87 : 1,
+  });
   const floor = new Mesh(new CircleGeometry(9, 48), floorMat);
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = 0.002;
@@ -645,8 +867,21 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
 
   // ---- lights
   scene.add(new HemisphereLight(0xffffff, 0x222222, 0.3));
-  const lamps: { light: SpotLight; cone: Mesh; tokenName: string; mix: number }[] = [];
-  const addLamp = (pos: Vector3, tokenName: string, mix: number, intensity: number, angle: number, shadow: boolean, conePower: number) => {
+  const lamps: {
+    light: SpotLight;
+    cone: Mesh;
+    tokenName: string;
+    mix: number;
+  }[] = [];
+  const addLamp = (
+    pos: Vector3,
+    tokenName: string,
+    mix: number,
+    intensity: number,
+    angle: number,
+    shadow: boolean,
+    conePower: number,
+  ) => {
     const light = new SpotLight(0xffffff, intensity, 22, angle, 0.55, 1.4);
     light.position.copy(pos);
     light.target.position.set(0.05, 0.6, 0);
@@ -668,7 +903,10 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
       new ShaderMaterial({
         vertexShader: coneVertex,
         fragmentShader: coneFragment,
-        uniforms: { uColor: { value: new Color() }, uPower: { value: conePower } },
+        uniforms: {
+          uColor: { value: new Color() },
+          uPower: { value: conePower },
+        },
         transparent: true,
         depthWrite: false,
         side: DoubleSide,
@@ -676,25 +914,30 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
       }),
     );
     cone.position.copy(pos);
-    cone.quaternion.setFromUnitVectors(v3(0, 1, 0), v3().copy(pos).sub(light.target.position).normalize());
+    cone.quaternion.setFromUnitVectors(
+      v3(0, 1, 0),
+      v3().copy(pos).sub(light.target.position).normalize(),
+    );
     scene.add(cone);
     lamps.push({ light, cone, tokenName, mix });
   };
-  addLamp(v3(-2.4, 5.6, 3.6), '--accent', 0.22, 120, 0.3, true, 0.5); // key, warm
-  addLamp(v3(3.4, 5.2, -2.8), '--signal', 0.7, 110, 0.3, false, 0.62); // rim from behind
-  addLamp(v3(-3.6, 4.8, -2.4), '--accent', 0.75, 80, 0.3, false, 0.5); // second rim
+  addLamp(v3(-2.4, 5.6, 3.6), "--accent", 0.22, 120, 0.3, true, 0.5); // key, warm
+  addLamp(v3(3.4, 5.2, -2.8), "--signal", 0.7, 110, 0.3, false, 0.62); // rim from behind
+  addLamp(v3(-3.6, 4.8, -2.4), "--accent", 0.75, 80, 0.3, false, 0.5); // second rim
 
-  const white = new Color('#fff4e6');
+  const white = new Color("#fff4e6");
   const applyTheme = () => {
     for (const l of lamps) {
-      const c = new Color(token(l.tokenName) || '#ffffff');
+      const c = new Color(token(l.tokenName) || "#ffffff");
       l.light.color.copy(white).lerp(c, l.mix);
-      (l.cone.material as ShaderMaterial).uniforms.uColor.value.copy(white).lerp(c, Math.min(1, l.mix + 0.2));
+      (l.cone.material as ShaderMaterial).uniforms.uColor.value
+        .copy(white)
+        .lerp(c, Math.min(1, l.mix + 0.2));
     }
-    floorMat.color.set(token('--bg-deep') || '#0c080a').multiplyScalar(1.6);
+    floorMat.color.set(token("--bg-deep") || "#0c080a").multiplyScalar(1.6);
   };
   applyTheme();
-  window.addEventListener('themechange', applyTheme);
+  window.addEventListener("themechange", applyTheme);
 
   // ---- size
   let offset = 0;
@@ -735,7 +978,8 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
     // she keeps spinning while you rest on counts 5-7
     const win = smooth(4.4, 5.0, u) * (1 - smooth(6.75, 7.1, u));
     spinTime += dt * win * 4.4;
-    if (win === 0) spinTime = Math.atan2(Math.sin(spinTime), Math.cos(spinTime));
+    if (win === 0)
+      spinTime = Math.atan2(Math.sin(spinTime), Math.cos(spinTime));
 
     choreo(u, time, spinTime, man, woman, reduce);
     man.finish(dt, time);
@@ -743,9 +987,16 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
 
     // camera: a slow arc around the couple, a little closer and lower for the floor spin
     const down = smooth(4.2, 5.1, u);
-    const az = lerp(-0.34, 0.3, smooth(0, 8, u)) + (reduce ? 0 : Math.sin(time * 0.25) * 0.02);
-    const dist = (lerp(6.6, 5.7, down) + 0.5 * smooth(7, 7.7, u)) * (portrait ? 1.12 : 1);
-    camera.position.set(Math.sin(az) * dist, lerp(1.5, 1.2, down), Math.cos(az) * dist);
+    const az =
+      lerp(-0.34, 0.3, smooth(0, 8, u)) +
+      (reduce ? 0 : Math.sin(time * 0.25) * 0.02);
+    const dist =
+      (lerp(6.6, 5.7, down) + 0.5 * smooth(7, 7.7, u)) * (portrait ? 1.12 : 1);
+    camera.position.set(
+      Math.sin(az) * dist,
+      lerp(1.5, 1.2, down),
+      Math.cos(az) * dist,
+    );
     look.set(0.02, lerp(0.92, 0.66, down), 0);
     camera.lookAt(look);
 
@@ -775,7 +1026,7 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
   });
   io.observe(canvas);
   const onVis = () => (document.hidden || !visible ? stop() : play());
-  document.addEventListener('visibilitychange', onVis);
+  document.addEventListener("visibilitychange", onVis);
   if (reduce) frame(0, true);
 
   return {
@@ -787,8 +1038,8 @@ export function initStageScene(canvas: HTMLCanvasElement): StageScene | null {
       stop();
       ro.disconnect();
       io.disconnect();
-      document.removeEventListener('visibilitychange', onVis);
-      window.removeEventListener('themechange', applyTheme);
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("themechange", applyTheme);
       renderer.dispose();
     },
   };
