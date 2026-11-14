@@ -11,7 +11,7 @@ interface Props {
 
 const { title, description = profile.summary, image = '/og.jpg', noindex = false } = Astro.props;
 
-const fullTitle = title ? `${title} | ${profile.name}` : `${profile.name} | Full-Stack Software Engineer`;
+const fullTitle = profile.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const defaultBg = themes.find((t) => t.id === DEFAULT_THEME)?.bg ?? '#130d10';
@@ -47,7 +47,6 @@ const themeBoot = `(function(){document.documentElement.classList.add('js');try{
 <meta name="theme-color" content={defaultBg} />
 <meta name="color-scheme" content="dark" />
 <meta name="author" content={profile.name} />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <script is:inline set:html={themeBoot} />
 

@@ -29,7 +29,6 @@ const year = new Date().getFullYear();
       <p class="site-footer__place">Sarajevo, <time data-local-time>--:--</time></p>
       <p class="site-footer__copy">&copy; {year} {profile.name}</p>
       <div class="themes" role="group" aria-label="Colour theme">
-        <span class="themes__label">Theme</span>
         {
           themes.map((t) => (
             <button type="button" class="themes__dot" data-theme-set={t.id} aria-pressed="false" title={`${t.name} - ${t.note}`} style={`--a:${t.bg};--b:${t.accent}`}>
@@ -120,9 +119,10 @@ const year = new Date().getFullYear();
     width: 1.5rem;
     height: 1.5rem;
     padding: 0;
-    border: 1px solid var(--rule-strong);
+    border: 0;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
+    background: var(--b);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
     cursor: pointer;
     transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
   }
@@ -132,7 +132,7 @@ const year = new Date().getFullYear();
   .themes__dot[aria-pressed='true'] {
     box-shadow:
       0 0 0 2px var(--bg),
-      0 0 0 3.5px var(--text);
+      0 0 0 3.5px var(--b);
   }
   @media (max-width: 760px) {
     .site-footer {

@@ -6,17 +6,17 @@
    (`theme midnight`) or the swatches in the footer.
 ------------------------------------------------------------------- */
 
-@import '@fontsource-variable/bodoni-moda/opsz.css';
-@import '@fontsource-variable/bodoni-moda/opsz-italic.css';
-@import '@fontsource-variable/ibm-plex-sans/index.css';
-@import '@fontsource/ibm-plex-mono/400.css';
-@import '@fontsource/ibm-plex-mono/500.css';
+@import "@fontsource-variable/bodoni-moda/opsz.css";
+@import "@fontsource-variable/bodoni-moda/opsz-italic.css";
+@import "@fontsource-variable/ibm-plex-sans/index.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
 
 /* ---------- Themes ----------
    To make another theme the default, change DEFAULT_THEME in src/data/themes.ts. */
 
 :root,
-[data-theme='velvet'] {
+[data-theme="velvet"] {
   /* Black tie: velvet black, brass, ivory, amber terminal */
   --bg: #130d10;
   --bg-deep: #0c080a;
@@ -33,7 +33,7 @@
   --tty-bg: #0d0907;
 }
 
-[data-theme='midnight'] {
+[data-theme="midnight"] {
   /* Midnight-blue tuxedo: deep navy, ice white, azure, lime spark */
   --bg: #0a0f1d;
   --bg-deep: #060a14;
@@ -50,7 +50,7 @@
   --tty-bg: #060b16;
 }
 
-[data-theme='aurora'] {
+[data-theme="aurora"] {
   /* Aurora: plum black, soft violet, lime terminal, rose signal */
   --bg: #120c1c;
   --bg-deep: #0a0612;
@@ -67,7 +67,7 @@
   --tty-bg: #0b0714;
 }
 
-[data-theme='graphite'] {
+[data-theme="graphite"] {
   /* Graphite and lime: neutral dev-tool grey with one loud accent */
   --bg: #0f1113;
   --bg-deep: #090a0b;
@@ -84,7 +84,7 @@
   --tty-bg: #08090a;
 }
 
-[data-theme='ember'] {
+[data-theme="ember"] {
   /* Ember: warm charcoal, sand, salsa red, amber terminal */
   --bg: #150d0c;
   --bg-deep: #0d0706;
@@ -107,9 +107,11 @@
   --danger: #ef8f73;
 
   /* type */
-  --serif: 'Bodoni Moda Variable', 'Bodoni 72', 'Didot', Georgia, serif;
-  --sans: 'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --serif: "Bodoni Moda Variable", "Bodoni 72", "Didot", Georgia, serif;
+  --sans:
+    "IBM Plex Sans Variable", "IBM Plex Sans", system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* type scale - 1.25 (major third) on a 17px base, display sizes fluid */
   --step--1: 0.85rem;
@@ -154,17 +156,19 @@ body {
   font-family: var(--sans);
   font-size: var(--step-0);
   line-height: 1.6;
-  font-feature-settings: 'kern', 'liga';
+  font-feature-settings: "kern", "liga";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
-  transition: background-color 0.5s var(--ease-out), color 0.5s var(--ease-out);
+  transition:
+    background-color 0.5s var(--ease-out),
+    color 0.5s var(--ease-out);
 }
 
 /* film grain over everything - prints the page on "paper" */
 body::after {
-  content: '';
+  content: "";
   position: fixed;
   inset: -50%;
   z-index: 90;
@@ -272,7 +276,7 @@ button {
 
 .section-title {
   font-size: var(--step-5);
-  font-variation-settings: 'opsz' 96;
+  font-variation-settings: "opsz" 48;
 }
 
 .section-intro {
@@ -379,7 +383,7 @@ kbd {
 }
 
 /* placeholders are only outlined while developing (npm run dev) */
-html.dev [data-placeholder='true'] {
+html.dev [data-placeholder="true"] {
   outline: 1px dashed var(--phosphor);
   outline-offset: 4px;
 }
