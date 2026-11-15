@@ -13,7 +13,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "@emailjs/browser": "^5.0.3",
-    "@fontsource-variable/bodoni-moda": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/ibm-plex-sans": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "astro": "^7.4.11",
