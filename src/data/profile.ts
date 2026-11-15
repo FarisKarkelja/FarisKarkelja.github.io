@@ -196,7 +196,7 @@ export const education = [
     place: "Sarajevo, BA",
     start: "Sep 2019",
     end: "Jun 2023",
-    detail: "School event hosting and a German language competition",
+    detail: "School event hosting, performing, and a German language competition.",
   },
 ];
 
